@@ -1,5 +1,6 @@
 import pygame
 import pygame_gui
+from player.player import Player
 
 
 def main():
@@ -19,6 +20,12 @@ def main():
 
     running = True
 
+    player = Player()
+    player.rect.x = 0
+    player.rect.y = 0
+    movement = 10
+    player_list = pygame.sprite.Group()
+
     while running:
         tick = clock.tick(60)/1000
 
@@ -29,15 +36,40 @@ def main():
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == play:
                     print("Play")
+                    player_list.add(player)
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == ord('w') or event.key == pygame.K_UP:
+                    player.move(0, -movement)
+                if event.key == ord('a') or event.key == pygame.K_LEFT:
+                    player.move(-movement, 0)
+                if event.key == ord('s') or event.key == pygame.K_DOWN:
+                    player.move(0, movement)
+                if event.key == ord('d') or event.key == pygame.K_RIGHT:
+                    player.move(movement, 0)
+
+            if event.type == pygame.KEYUP:
+                if event.key == ord('w') or event.key == pygame.K_UP:
+                    player.move(0, movement)
+                if event.key == ord('a') or event.key == pygame.K_LEFT:
+                    player.move(movement, 0)
+                if event.key == ord('s') or event.key == pygame.K_DOWN:
+                    player.move(0, -movement)
+                if event.key == ord('d') or event.key == pygame.K_RIGHT:
+                    player.move(-movement, 0)
 
             manager.process_events(event)
 
         manager.update(tick)
 
         window_surface.blit(background, (0, 0))
+        player_list.draw(window_surface)
+        player.update()
+
         manager.draw_ui(window_surface)
 
         pygame.display.update()
+        pygame.display.flip()
 
 
 if __name__ == '__main__':

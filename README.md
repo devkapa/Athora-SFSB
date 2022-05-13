@@ -8,9 +8,11 @@ The year is 2157, 20 years after the defeat of mastermind and billionaire Felon 
 
 A new hope was struck for the world when the secret agent who destroyed Felon took over his empire and rescued the world, relocating humanity to the newly discovered planet KESUM-F.
 
-However, something is off. People around the planet are mysteriously disappearing. Not only that, but a recent recon expedition spotted an underground laboratory operating in secret below the planet's crust...
+However, something is off. People around the planet are mysteriously disappearing. Not only that, but a recent recon expedition conducted by your mining company spotted an underground laboratory operating in secret below the planet's crust...
 
-You have taken it upon yourself to sneak into the lab and figure out what the hell is going on.
+Unfortunately, no one but you seems to suspect anything...
+
+You, a low level employee, have taken it upon yourself to sneak into the lab and figure out what the hell is going on.
 
 # How to play
 Athora: SpaceF Strikes Back is currently in development. While you're waiting, try Athora: A New Boat!
