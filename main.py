@@ -23,11 +23,13 @@ def main():
     player = Player()
     player.rect.x = 0
     player.rect.y = 0
-    movement = 10
     player_list = pygame.sprite.Group()
 
+    font = pygame.font.SysFont('Comic Sans MS', 30)
+
     while running:
-        tick = clock.tick(60)/1000
+        tick = clock.tick(60)
+        text = font.render(f"X: {player.rect.x} Y: {player.rect.y}", True, '#000000', None)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -35,36 +37,26 @@ def main():
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == play:
-                    print("Play")
+                    print("Game started")
+                    play.hide()
                     player_list.add(player)
 
             if event.type == pygame.KEYDOWN:
-                if event.key == ord('w') or event.key == pygame.K_UP:
-                    player.move(0, -movement)
-                if event.key == ord('a') or event.key == pygame.K_LEFT:
-                    player.move(-movement, 0)
-                if event.key == ord('s') or event.key == pygame.K_DOWN:
-                    player.move(0, movement)
-                if event.key == ord('d') or event.key == pygame.K_RIGHT:
-                    player.move(movement, 0)
+                player.move(event, 1)
 
             if event.type == pygame.KEYUP:
-                if event.key == ord('w') or event.key == pygame.K_UP:
-                    player.move(0, movement)
-                if event.key == ord('a') or event.key == pygame.K_LEFT:
-                    player.move(movement, 0)
-                if event.key == ord('s') or event.key == pygame.K_DOWN:
-                    player.move(0, -movement)
-                if event.key == ord('d') or event.key == pygame.K_RIGHT:
-                    player.move(-movement, 0)
+                player.move(event, 0)
 
             manager.process_events(event)
 
         manager.update(tick)
 
         window_surface.blit(background, (0, 0))
+
         player_list.draw(window_surface)
         player.update()
+
+        window_surface.blit(text, (0, 0))
 
         manager.draw_ui(window_surface)
 
