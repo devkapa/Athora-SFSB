@@ -1,42 +1,57 @@
 import os.path
-import pygame
+
+import pygame.image
 
 
-class Player(pygame.sprite.Sprite):
+class Player:
 
-    tiles = 3
+    VELOCITY = 2
 
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.movex = 0
-        self.movey = 0
-        self.frame = 0
+    HEALTH = 10
+    DAMAGE = pygame.USEREVENT + 1
 
-        self.images = []
+    PLAYER_WIDTH, PLAYER_HEIGHT = 64, 64
+    SPAWN_X, SPAWN_Y = 0, 0
 
-        texture = pygame.image.load(os.path.join('assets', 'sprites', 'hero.png')).convert()
+    PLAYER_LEFT_IMG = pygame.image.load(os.path.join('assets', 'sprites', 'hero.png'))
+    PLAYER_LEFT = pygame.transform.scale(PLAYER_LEFT_IMG, (PLAYER_WIDTH, PLAYER_HEIGHT))
 
-        self.images.append(texture)
-        self.image = pygame.transform.scale(self.images[0], (64, 64))
+    HEART_WIDTH, HEART_HEIGHT = 36, 36
 
-        self.rect = self.image.get_rect()
+    FULL_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'full_heart.png'))
+    EMPTY_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'empty_heart.png'))
 
-    def _move(self, x, y):
-        self.movex += x
-        self.movey += y
+    FULL_HEART = pygame.transform.scale(FULL_HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
+    EMPTY_HEART = pygame.transform.scale(EMPTY_HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
 
-    def move(self, event, down):
-        if event.key == ord('w') or event.key == pygame.K_UP:
-            self._move(0, -self.tiles if down else self.tiles)
-        if event.key == ord('a') or event.key == pygame.K_LEFT:
-            self._move(-self.tiles if down else self.tiles, 0)
-        if event.key == ord('s') or event.key == pygame.K_DOWN:
-            self._move(0, self.tiles if down else -self.tiles)
-        if event.key == ord('d') or event.key == pygame.K_RIGHT:
-            self._move(self.tiles if down else -self.tiles, 0)
+    rect: pygame.Rect
 
-    def update(self):
-        self.rect.x += self.movex
-        self.rect.y += self.movey
+    def __init__(self, spawn_x=0, spawn_y=0):
+        self.SPAWN_X = spawn_x
+        self.SPAWN_Y = spawn_y
+        self.rect = pygame.Rect(self.SPAWN_X, self.SPAWN_Y, self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
 
+    def handle_movement(self, keys_pressed):
+        if keys_pressed[pygame.K_a]:
+            self.rect.x -= self.VELOCITY
+        if keys_pressed[pygame.K_d]:
+            self.rect.x += self.VELOCITY
+        if keys_pressed[pygame.K_w]:
+            self.rect.y -= self.VELOCITY
+        if keys_pressed[pygame.K_s]:
+            self.rect.y += self.VELOCITY
 
+    def process_event(self, event):
+        if event.type == self.DAMAGE:
+            self.HEALTH -= 1
+
+    def draw(self, surface):
+        surface.blit(self.PLAYER_LEFT, (self.rect.x, self.rect.y))
+        last_heart = 5
+        for heart in range(self.HEALTH):
+            surface.blit(self.FULL_HEART, (last_heart, 5))
+            last_heart += self.HEART_WIDTH + 5
+        for heart in range(10 - self.HEALTH):
+            if heart < 10:
+                surface.blit(self.EMPTY_HEART, (last_heart, 5))
+                last_heart += self.HEART_WIDTH + 5

@@ -1,67 +1,72 @@
 import pygame
-import pygame_gui
+
 from player.player import Player
+
+pygame.font.init()
+
+
+WHITE = (255, 255, 255)
+PINK = (255, 225, 225)
+
+WIDTH, HEIGHT = 800, 600
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Athora: SpaceF Strikes Back")
+
+DAMAGE_SURFACE = pygame.Surface((800, 600))
+DAMAGE_SURFACE.set_alpha(180)
+DAMAGE_SURFACE.fill(PINK)
+
+FPS = 60
+PAUSED, CONTINUE = 0, 1
+
+
+def draw_window(player):
+    WIN.fill(WHITE)
+    player.draw(WIN)
+
+
+def draw_death():
+    WIN.blit(DAMAGE_SURFACE, (0, 0))
 
 
 def main():
-    pygame.init()
-
-    pygame.display.set_caption("Athora: SpaceF Strikes Back")
-    window_surface = pygame.display.set_mode((800, 600))
-
-    background = pygame.Surface((800, 600))
-    background.fill(pygame.Color('#00FFFF'))
-
-    manager = pygame_gui.UIManager((800, 600))
-
-    play = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Play!', manager=manager)
 
     clock = pygame.time.Clock()
-
     running = True
 
-    player = Player()
-    player.rect.x = 0
-    player.rect.y = 0
-    player_list = pygame.sprite.Group()
+    state = CONTINUE
 
-    font = pygame.font.SysFont('Comic Sans MS', 30)
+    player = Player()
 
     while running:
-        tick = clock.tick(60)
-        text = font.render(f"X: {player.rect.x} Y: {player.rect.y}", True, '#000000', None)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+        clock.tick(FPS)
 
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == play:
-                    print("Game started")
-                    play.hide()
-                    player_list.add(player)
+        if state == CONTINUE:
 
-            if event.type == pygame.KEYDOWN:
-                player.move(event, 1)
+            for event in pygame.event.get():
 
-            if event.type == pygame.KEYUP:
-                player.move(event, 0)
+                if event.type == pygame.QUIT:
+                    running = False
+                    pygame.quit()
 
-            manager.process_events(event)
+                # DEBUG
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_h:
+                        player.HEALTH -= 1
 
-        manager.update(tick)
+                player.process_event(event)
 
-        window_surface.blit(background, (0, 0))
+            keys_pressed = pygame.key.get_pressed()
+            player.handle_movement(keys_pressed)
 
-        player_list.draw(window_surface)
-        player.update()
+            draw_window(player)
 
-        window_surface.blit(text, (0, 0))
-
-        manager.draw_ui(window_surface)
+        if player.HEALTH <= 0:
+            draw_death()
+            state = PAUSED
 
         pygame.display.update()
-        pygame.display.flip()
 
 
 if __name__ == '__main__':
