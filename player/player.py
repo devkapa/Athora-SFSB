@@ -2,18 +2,21 @@ import os.path
 
 import pygame.image
 
+from world.map_objects import Wall
+
 
 class Player:
 
-    VELOCITY = 2
+    VELOCITY = 1
 
     HEALTH = 10
     DAMAGE = pygame.USEREVENT + 1
+    DAMAGE_EVENT = pygame.event.Event(DAMAGE)
 
-    PLAYER_WIDTH, PLAYER_HEIGHT = 64, 64
+    PLAYER_WIDTH, PLAYER_HEIGHT = 32, 56
     SPAWN_X, SPAWN_Y = 0, 0
 
-    PLAYER_LEFT_IMG = pygame.image.load(os.path.join('assets', 'sprites', 'hero.png'))
+    PLAYER_LEFT_IMG = pygame.image.load(os.path.join('assets', 'sprites', 'hero_left_still.png'))
     PLAYER_LEFT = pygame.transform.scale(PLAYER_LEFT_IMG, (PLAYER_WIDTH, PLAYER_HEIGHT))
 
     HEART_WIDTH, HEART_HEIGHT = 36, 36
@@ -31,19 +34,38 @@ class Player:
         self.SPAWN_Y = spawn_y
         self.rect = pygame.Rect(self.SPAWN_X, self.SPAWN_Y, self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
 
-    def handle_movement(self, keys_pressed):
-        if keys_pressed[pygame.K_a]:
-            self.rect.x -= self.VELOCITY
-        if keys_pressed[pygame.K_d]:
-            self.rect.x += self.VELOCITY
-        if keys_pressed[pygame.K_w]:
-            self.rect.y -= self.VELOCITY
-        if keys_pressed[pygame.K_s]:
-            self.rect.y += self.VELOCITY
+    def handle_movement(self, window, keys_pressed, level):
+        if keys_pressed[pygame.K_a] and self.rect.x - self.VELOCITY > 0:
+            if not self.check_collision(level, (self.rect.x - self.VELOCITY, self.rect.y)):
+                self.rect.x -= self.VELOCITY
+        if keys_pressed[pygame.K_d] and self.rect.x + self.VELOCITY < window.get_width() - self.PLAYER_WIDTH:
+            if not self.check_collision(level, (self.rect.x + self.VELOCITY, self.rect.y)):
+                self.rect.x += self.VELOCITY
+        if keys_pressed[pygame.K_w] and self.rect.y - self.VELOCITY > 0:
+            if not self.check_collision(level, (self.rect.x, self.rect.y - self.VELOCITY)):
+                self.rect.y -= self.VELOCITY
+        if keys_pressed[pygame.K_s] and self.rect.y + self.VELOCITY < window.get_height() - self.PLAYER_WIDTH:
+            if not self.check_collision(level, (self.rect.x, self.rect.y + self.VELOCITY)):
+                self.rect.y += self.VELOCITY
+
+    def check_collision(self, level, change):
+        potential_rect = pygame.Rect(change[0], change[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
+        for map_object in level.map_objects:
+            if isinstance(map_object, Wall):
+                if map_object.rect.colliderect(potential_rect):
+                    return True
+        return False
 
     def process_event(self, event):
         if event.type == self.DAMAGE:
-            self.HEALTH -= 1
+            if self.HEALTH + event.hp > 10:
+                self.HEALTH = 10
+                return
+            self.HEALTH += event.hp
+
+    def change_hp(self, amount):
+        self.DAMAGE_EVENT.hp = amount
+        pygame.event.post(self.DAMAGE_EVENT)
 
     def draw(self, surface):
         surface.blit(self.PLAYER_LEFT, (self.rect.x, self.rect.y))
