@@ -32,10 +32,14 @@ def get_levels():
     maps_dir = os.path.join('assets', 'levels')
     level_files = [f for f in os.listdir(maps_dir)
                    if os.path.isfile(os.path.join(maps_dir, f)) and f.lower().endswith(".txt")]
-    for level in level_files:
+    for level in sorted(level_files, key=level_sorter):
         with open(f'{os.path.join(maps_dir, level)}', 'r') as file:
             levels.append(file.read())
     return levels
+
+
+def level_sorter(x):
+    return os.path.split(x)[-1]
 
 
 def render_font(text, px):
