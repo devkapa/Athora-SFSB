@@ -35,18 +35,26 @@ class Player:
         self.rect = pygame.Rect(self.SPAWN_X, self.SPAWN_Y, self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
 
     def handle_movement(self, window, keys_pressed, level):
-        if keys_pressed[pygame.K_a] and self.rect.x - self.VELOCITY > 0:
-            if not self.check_collision(level, (self.rect.x - self.VELOCITY, self.rect.y)):
-                self.rect.x -= self.VELOCITY
-        if keys_pressed[pygame.K_d] and self.rect.x + self.VELOCITY < window.get_width() - self.PLAYER_WIDTH:
-            if not self.check_collision(level, (self.rect.x + self.VELOCITY, self.rect.y)):
-                self.rect.x += self.VELOCITY
+        x_change = 0
+        y_change = 0
         if keys_pressed[pygame.K_w] and self.rect.y - self.VELOCITY > 0:
             if not self.check_collision(level, (self.rect.x, self.rect.y - self.VELOCITY)):
-                self.rect.y -= self.VELOCITY
+                y_change -= self.VELOCITY
+            x_change = 0
+        if keys_pressed[pygame.K_a] and self.rect.x - self.VELOCITY > 0:
+            if not self.check_collision(level, (self.rect.x - self.VELOCITY, self.rect.y)):
+                x_change -= self.VELOCITY
+            y_change = 0
         if keys_pressed[pygame.K_s] and self.rect.y + self.VELOCITY < window.get_height() - self.PLAYER_WIDTH:
             if not self.check_collision(level, (self.rect.x, self.rect.y + self.VELOCITY)):
-                self.rect.y += self.VELOCITY
+                y_change += self.VELOCITY
+            x_change = 0
+        if keys_pressed[pygame.K_d] and self.rect.x + self.VELOCITY < window.get_width() - self.PLAYER_WIDTH:
+            if not self.check_collision(level, (self.rect.x + self.VELOCITY, self.rect.y)):
+                x_change += self.VELOCITY
+            y_change = 0
+        self.rect.x += x_change
+        self.rect.y += y_change
 
     def check_collision(self, level, change):
         potential_rect = pygame.Rect(change[0], change[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
