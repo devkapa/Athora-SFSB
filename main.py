@@ -14,6 +14,7 @@ PINK = (255, 225, 225)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 GRAY = (168, 168, 168)
+BLACK = (0, 0, 0)
 
 WIDTH, HEIGHT = 832, 640
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -55,11 +56,11 @@ def create_overlay_surface(colour, alpha=180):
 
 
 def draw_window(player, global_map):
-    WIN.fill(AQUA)
+    WIN.fill(BLACK)
     global_map.draw(WIN)
     player.draw(WIN)
-    title = render_font(global_map.title, 20)
-    WIN.blit(title, (WIDTH - title.get_width(), 5))
+    title = render_font(global_map.title, 28)
+    WIN.blit(title, (WIDTH - title.get_width(), 9))
 
 
 def draw_overlay(colour, title, subheading):
@@ -103,11 +104,12 @@ def main():
     damage = NONE
     damage_frames = 0
 
-    levels = get_levels()
-    level_1 = Map("Level 1", levels[0])
-    level_2 = Map("Level 2", levels[1])
+    levels = []
 
-    levels = Maps([level_1, level_2], player)
+    for index, level in enumerate(get_levels()):
+        levels.append(Map(f'Level {index + 1}', level))
+
+    levels = Maps(levels, player)
 
     hovering = (False, None)
 
@@ -136,14 +138,6 @@ def main():
             if state == CONTINUE:
 
                 if event.type == pygame.KEYDOWN:
-
-                    # DEBUG
-                    if event.key == pygame.K_h:
-                        player.change_hp(-1)
-
-                    # DEBUG
-                    if event.key == pygame.K_j:
-                        player.change_hp(1)
 
                     if event.key == pygame.K_p:
                         state = PAUSED

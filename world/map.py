@@ -9,7 +9,7 @@ class Map:
     layout: str
 
     map_objects: list[ObjectType]
-    center_point: ObjectType
+    spawn_point: ObjectType
 
     rect: pygame.Rect
     title: str
@@ -24,23 +24,23 @@ class Map:
 
         for line_index, line in enumerate(split_layout):
             for char_index, char in enumerate(line):
-                if char == "W":
-                    self.map_objects.append(Wall(char_index, line_index))
                 if char == " ":
                     self.map_objects.append(Floor(char_index, line_index))
-                if char == "C":
-                    center = Floor(char_index, line_index)
-                    self.center_point = center
-                    self.map_objects.append(center)
-                if char == "I":
+                if char == "W":
+                    self.map_objects.append(Wall(char_index, line_index))
+                if char == "S":
+                    spawn = Floor(char_index, line_index)
+                    self.spawn_point = spawn
+                    self.map_objects.append(spawn)
+                if char == "T":
                     self.map_objects.append(ExitDoor(char_index, line_index))
 
     def draw(self, surface):
         for obj in self.map_objects:
             obj.draw(surface)
 
-    def get_center_point(self):
-        return self.center_point
+    def get_spawn_point(self):
+        return self.spawn_point
 
 
 class Maps:
@@ -57,9 +57,10 @@ class Maps:
 
     def __add__(self, other):
         if isinstance(other, int):
-            self.current = self.maps[self.maps.index(self.current) + other]
-            self.spawn_player()
+            if self.maps[self.maps.index(self.current) + other] is not None:
+                self.current = self.maps[self.maps.index(self.current) + other]
+                self.spawn_player()
 
     def spawn_player(self):
-        self.player.rect.x = self.current.center_point.rect.x
-        self.player.rect.y = self.current.center_point.rect.y - self.player.PLAYER_WIDTH / 2
+        self.player.rect.x = self.current.spawn_point.rect.x
+        self.player.rect.y = self.current.spawn_point.rect.y - self.player.PLAYER_WIDTH / 2

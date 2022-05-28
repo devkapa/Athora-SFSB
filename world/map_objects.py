@@ -55,12 +55,12 @@ class InteractiveType(ObjectType):
 
 class ExitDoor(InteractiveType):
 
-    POPUP = 'Press F to enter door'
+    POPUP = "'F' to enter"
     ENTER = pygame.USEREVENT + 2
     EVENT = pygame.event.Event(ENTER)
     HOVER = pygame.USEREVENT + 3
     HOVER_EVENT = pygame.event.Event(ENTER)
-    TEXTURE = 'wall.png'
+    TEXTURE = 'trapdoor.png'
 
     def __init__(self, pos_x, pos_y):
         super().__init__(self.EVENT, self.HOVER_EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
