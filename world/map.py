@@ -39,6 +39,11 @@ class Map:
         for obj in self.map_objects:
             obj.draw(surface)
 
+    def scroll(self, vel_x, vel_y):
+        for obj in self.map_objects:
+            obj.rect.x += vel_x
+            obj.rect.y += vel_y
+
     def get_spawn_point(self):
         return self.spawn_point
 

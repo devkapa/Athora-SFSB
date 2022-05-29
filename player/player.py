@@ -82,6 +82,24 @@ class Player:
                 self.direction = (True, False, False, False)
                 x_change += self.VELOCITY
                 y_change = 0
+        if x_change != 0:
+            if self.rect.x + x_change > window.get_width() - window.get_width()//4 and self.direction[self.RIGHT]:
+                level.scroll(-1, 0)
+                x_change = 0
+                self.prev_pos_x -= 1
+            if self.rect.x + x_change < window.get_width() - ((window.get_width()//4)*3) and self.direction[self.LEFT]:
+                level.scroll(1, 0)
+                x_change = 0
+                self.prev_pos_x += 1
+        if y_change != 0:
+            if self.rect.y + y_change > window.get_height() - window.get_height()//4 and self.direction[self.DOWN]:
+                level.scroll(0, -1)
+                y_change = 0
+                self.prev_pos_y -= 1
+            if self.rect.y + y_change < window.get_height() - ((window.get_height()//4)*3) and self.direction[self.UP]:
+                level.scroll(0, 1)
+                y_change = 0
+                self.prev_pos_y += 1
         self.rect.x += x_change
         self.rect.y += y_change
 
