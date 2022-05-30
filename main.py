@@ -23,6 +23,8 @@ pygame.display.set_caption("Athora: SpaceF Strikes Back")
 ICON = pygame.image.load(os.path.join('assets', 'textures', 'wall.png'))
 pygame.display.set_icon(ICON)
 
+BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'grass_bkg.png')).convert_alpha()
+
 FPS = 144
 PAUSED, CONTINUE = 0, 1
 DEDUCT, NONE, GAIN = -1, 0, 1
@@ -57,6 +59,7 @@ def create_overlay_surface(colour, alpha=180):
 
 def draw_window(player, global_map):
     WIN.fill(BLACK)
+    WIN.blit(BACKGROUND, (0, 0))
     global_map.draw(WIN)
     player.draw(WIN)
     title = render_font(global_map.title, 28)

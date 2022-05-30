@@ -13,6 +13,8 @@ class Player:
     DAMAGE = pygame.USEREVENT + 1
     DAMAGE_EVENT = pygame.event.Event(DAMAGE)
 
+    GRAVITY = 4
+
     PLAYER_WIDTH, PLAYER_HEIGHT = 32, 56
     SPAWN_X, SPAWN_Y = 0, 0
 
@@ -62,6 +64,8 @@ class Player:
         self.prev_pos_y = self.rect.y
         x_change = 0
         y_change = 0
+        if self.apply_gravity(level):
+            return
         if keys_pressed[pygame.K_w] and self.rect.y - self.VELOCITY > 0:
             if not self.check_collision(level, (self.rect.x, self.rect.y - self.VELOCITY)):
                 self.direction = (False, False, True, False)
@@ -115,6 +119,12 @@ class Player:
             else:
                 return True, self.DOWN
         return False, None
+
+    def apply_gravity(self, level):
+        if not self.check_collision(level, (self.rect.x, self.rect.y + self.GRAVITY)):
+            self.rect.y += self.GRAVITY
+            return True
+        return False
 
     def check_collision(self, level, change):
         potential_rect = pygame.Rect(change[0], change[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
