@@ -24,7 +24,7 @@ class Map:
 
         for line_index, line in enumerate(split_layout):
             for char_index, char in enumerate(line):
-                if char == " ":
+                if char == "-":
                     self.map_objects.append(Floor(char_index, line_index))
                 if char == "W":
                     self.map_objects.append(Wall(char_index, line_index))

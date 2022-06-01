@@ -13,7 +13,7 @@ class Player:
     DAMAGE = pygame.USEREVENT + 1
     DAMAGE_EVENT = pygame.event.Event(DAMAGE)
 
-    GRAVITY = 4
+    GRAVITY = 2
 
     PLAYER_WIDTH, PLAYER_HEIGHT = 32, 56
     SPAWN_X, SPAWN_Y = 0, 0
@@ -53,6 +53,9 @@ class Player:
     direction = (False, True, False, False)
     animation_frame_count = 0
 
+    jump_height = 64
+    jumping = False
+
     def __init__(self, spawn_x=0, spawn_y=0):
         self.SPAWN_X = spawn_x
         self.SPAWN_Y = spawn_y
@@ -64,46 +67,52 @@ class Player:
         self.prev_pos_y = self.rect.y
         x_change = 0
         y_change = 0
-        if self.apply_gravity(level):
-            return
-        if keys_pressed[pygame.K_w] and self.rect.y - self.VELOCITY > 0:
-            if not self.check_collision(level, (self.rect.x, self.rect.y - self.VELOCITY)):
-                self.direction = (False, False, True, False)
-                y_change -= self.VELOCITY
-                x_change = 0
-        if keys_pressed[pygame.K_a] and self.rect.x - self.VELOCITY > 0:
-            if not self.check_collision(level, (self.rect.x - self.VELOCITY, self.rect.y)):
-                self.direction = (False, True, False, False)
-                x_change -= self.VELOCITY
-                y_change = 0
-        if keys_pressed[pygame.K_s] and self.rect.y + self.VELOCITY < window.get_height() - self.PLAYER_WIDTH:
-            if not self.check_collision(level, (self.rect.x, self.rect.y + self.VELOCITY)):
-                self.direction = (False, False, False, True)
-                y_change += self.VELOCITY
-                x_change = 0
-        if keys_pressed[pygame.K_d] and self.rect.x + self.VELOCITY < window.get_width() - self.PLAYER_WIDTH:
-            if not self.check_collision(level, (self.rect.x + self.VELOCITY, self.rect.y)):
-                self.direction = (True, False, False, False)
-                x_change += self.VELOCITY
-                y_change = 0
+        if not self.jumping:
+            if self.apply_gravity(level):
+                y_change = self.GRAVITY
+                self.direction = (self.direction[self.RIGHT], self.direction[self.LEFT], False, True)
+            else:
+                if keys_pressed[pygame.K_SPACE]:
+                    self.jumping = True
+                if keys_pressed[pygame.K_a]:
+                    if not self.check_collision(level, (self.rect.x - self.VELOCITY, self.rect.y)):
+                        self.direction = (False, True, False, False)
+                        x_change -= self.VELOCITY
+                if keys_pressed[pygame.K_d]:
+                    if not self.check_collision(level, (self.rect.x + self.VELOCITY, self.rect.y)):
+                        self.direction = (True, False, False, False)
+                        x_change += self.VELOCITY
+        else:
+            if self.jump_height >= -64:
+                curve = (self.jump_height * abs(self.jump_height)) / 512
+                if not self.check_collision(level, (self.rect.x, self.rect.y - curve)):
+                    self.direction = (self.direction[self.RIGHT], self.direction[self.LEFT], True, False)
+                    y_change -= curve
+                    self.jump_height -= 4
+                else:
+                    self.jumping = False
+                    self.jump_height = 64
+            else:
+                self.jumping = False
+                self.jump_height = 64
         if x_change != 0:
-            if self.rect.x + x_change > window.get_width() - window.get_width()//4 and self.direction[self.RIGHT]:
+            if self.rect.x + x_change > window.get_width() * 0.75 and self.direction[self.RIGHT]:
                 level.scroll(-1, 0)
                 x_change = 0
                 self.prev_pos_x -= 1
-            if self.rect.x + x_change < window.get_width() - ((window.get_width()//4)*3) and self.direction[self.LEFT]:
+            if self.rect.x + x_change < window.get_width() * 0.25 and self.direction[self.LEFT]:
                 level.scroll(1, 0)
                 x_change = 0
                 self.prev_pos_x += 1
         if y_change != 0:
-            if self.rect.y + y_change > window.get_height() - window.get_height()//4 and self.direction[self.DOWN]:
-                level.scroll(0, -1)
+            if self.rect.y + y_change > window.get_height() * 0.75 and self.direction[self.DOWN]:
+                level.scroll(0, -self.GRAVITY)
                 y_change = 0
-                self.prev_pos_y -= 1
-            if self.rect.y + y_change < window.get_height() - ((window.get_height()//4)*3) and self.direction[self.UP]:
-                level.scroll(0, 1)
+                self.prev_pos_y -= self.GRAVITY
+            if self.rect.y + y_change < window.get_height() * 0.25 and self.direction[self.UP]:
+                level.scroll(0, self.GRAVITY)
                 y_change = 0
-                self.prev_pos_y += 1
+                self.prev_pos_y += self.GRAVITY
         self.rect.x += x_change
         self.rect.y += y_change
 
@@ -122,7 +131,6 @@ class Player:
 
     def apply_gravity(self, level):
         if not self.check_collision(level, (self.rect.x, self.rect.y + self.GRAVITY)):
-            self.rect.y += self.GRAVITY
             return True
         return False
 
@@ -167,10 +175,6 @@ class Player:
             if self.direction[self.RIGHT]:
                 self.current_img = self.PLAYER_RIGHT
             if self.direction[self.LEFT]:
-                self.current_img = self.PLAYER_LEFT
-            if self.direction[self.UP]:
-                self.current_img = self.PLAYER_RIGHT
-            if self.direction[self.DOWN]:
                 self.current_img = self.PLAYER_LEFT
         surface.blit(self.current_img, (self.rect.x, self.rect.y))
         last_heart = 5
