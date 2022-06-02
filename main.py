@@ -1,6 +1,8 @@
+import datetime
 import os.path
 
 import pygame
+import time
 
 from world.map import Map, Maps
 from player.player import Player
@@ -57,12 +59,14 @@ def create_overlay_surface(colour, alpha=180):
     return surface
 
 
-def draw_window(player, global_map):
+def draw_window(player, global_map, formatted_elapsed_time):
     WIN.fill(BLACK)
     WIN.blit(BACKGROUND, (0, 0))
     global_map.draw(WIN)
     player.draw(WIN)
     title = render_font(global_map.title, 28)
+    timer = render_font(str(formatted_elapsed_time), 20)
+    WIN.blit(timer, (WIDTH - timer.get_width(), title.get_height() + 15))
     WIN.blit(title, (WIDTH - title.get_width(), 9))
 
 
@@ -100,6 +104,7 @@ def draw_popup(interactive, player):
 def main():
     clock = pygame.time.Clock()
     running = True
+    start_time = time.time()
 
     state = CONTINUE
 
@@ -116,10 +121,13 @@ def main():
 
     hovering = (False, None)
 
+    print(start_time)
+
     while running:
 
         clock.tick(FPS)
         current_level = levels.current
+        time_elapsed = datetime.timedelta(seconds=round((time.time() - start_time)))
 
         for event in pygame.event.get():
 
@@ -164,7 +172,9 @@ def main():
             keys_pressed = pygame.key.get_pressed()
             player.handle_movement(WIN, keys_pressed, current_level)
 
-        draw_window(player, current_level)
+        time_elapsed = datetime.timedelta(seconds=round((time.time() - start_time)))
+
+        draw_window(player, current_level, time_elapsed)
 
         if damage != NONE:
             damage_frames += 1
