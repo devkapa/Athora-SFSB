@@ -74,14 +74,6 @@ class Player:
             else:
                 if keys_pressed[pygame.K_SPACE]:
                     self.jumping = True
-                if keys_pressed[pygame.K_a]:
-                    if not self.check_collision(level, (self.rect.x - self.VELOCITY, self.rect.y)):
-                        self.direction = (False, True, False, False)
-                        x_change -= self.VELOCITY
-                if keys_pressed[pygame.K_d]:
-                    if not self.check_collision(level, (self.rect.x + self.VELOCITY, self.rect.y)):
-                        self.direction = (True, False, False, False)
-                        x_change += self.VELOCITY
         else:
             if self.jump_height >= -64:
                 curve = (self.jump_height * abs(self.jump_height)) / 512
@@ -95,6 +87,15 @@ class Player:
             else:
                 self.jumping = False
                 self.jump_height = 64
+
+        if keys_pressed[pygame.K_a]:
+            if not self.check_collision(level, (self.rect.x - self.VELOCITY, self.rect.y)):
+                self.direction = (False, True, False, False)
+                x_change -= self.VELOCITY
+        if keys_pressed[pygame.K_d]:
+            if not self.check_collision(level, (self.rect.x + self.VELOCITY, self.rect.y)):
+                self.direction = (True, False, False, False)
+                x_change += self.VELOCITY
         if x_change != 0:
             if self.rect.x + x_change > window.get_width() * 0.75 and self.direction[self.RIGHT]:
                 level.scroll(-1, 0)
