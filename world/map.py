@@ -1,7 +1,7 @@
 import pygame
 
 from player.player import Player
-from world.map_objects import ObjectType, Floor, Wall, ExitDoor
+from world.map_objects import ObjectType, Floor, Wall, ExitDoor, Air, Barrier, Grass, Dirt
 
 
 class Map:
@@ -29,11 +29,17 @@ class Map:
                 if char == "W":
                     self.map_objects.append(Wall(char_index, line_index))
                 if char == "S":
-                    spawn = Floor(char_index, line_index)
+                    spawn = Air(char_index, line_index)
                     self.spawn_point = spawn
                     self.map_objects.append(spawn)
                 if char == "T":
                     self.map_objects.append(ExitDoor(char_index, line_index))
+                if char == "B":
+                    self.map_objects.append(Barrier(char_index, line_index))
+                if char == "G":
+                    self.map_objects.append(Grass(char_index, line_index))
+                if char == "D":
+                    self.map_objects.append(Dirt(char_index, line_index))
 
     def draw(self, surface):
         for obj in self.map_objects:

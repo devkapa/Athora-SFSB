@@ -25,7 +25,7 @@ pygame.display.set_caption("Athora: SpaceF Strikes Back")
 ICON = pygame.image.load(os.path.join('assets', 'textures', 'wall.png'))
 pygame.display.set_icon(ICON)
 
-BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'grass_bkg.png')).convert_alpha()
+BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'night_sky.jpg')).convert_alpha()
 
 FPS = 144
 PAUSED, CONTINUE = 0, 1

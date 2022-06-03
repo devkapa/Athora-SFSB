@@ -20,7 +20,29 @@ class ObjectType:
         surface.blit(self.TEXTURE, (self.rect.x, self.rect.y))
 
 
-class Wall(ObjectType):
+class Floor(ObjectType):
+
+    texture = 'floor.png'
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
+
+class Air(ObjectType):
+
+    texture = 'barrier.png'
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
+
+class CollideType(ObjectType):
+
+    def __init__(self, pos_x, pos_y, texture):
+        super().__init__(pos_x, pos_y, texture)
+
+
+class Wall(CollideType):
 
     texture = 'wall.png'
 
@@ -28,9 +50,25 @@ class Wall(ObjectType):
         super().__init__(pos_x, pos_y, self.texture)
 
 
-class Floor(ObjectType):
+class Grass(CollideType):
 
-    texture = 'floor.png'
+    texture = 'grass.png'
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
+
+class Dirt(CollideType):
+
+    texture = 'dirt.png'
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
+
+class Barrier(CollideType):
+
+    texture = 'barrier.png'
 
     def __init__(self, pos_x, pos_y):
         super().__init__(pos_x, pos_y, self.texture)

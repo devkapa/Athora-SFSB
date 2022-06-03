@@ -2,7 +2,7 @@ import os.path
 
 import pygame.image
 
-from world.map_objects import Wall
+from world.map_objects import Wall, CollideType
 
 
 class Player:
@@ -138,7 +138,7 @@ class Player:
     def check_collision(self, level, change):
         potential_rect = pygame.Rect(change[0], change[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
         for map_object in level.map_objects:
-            if isinstance(map_object, Wall):
+            if isinstance(map_object, CollideType):
                 if map_object.rect.colliderect(potential_rect):
                     return True
         return False
