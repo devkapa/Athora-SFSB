@@ -19,6 +19,11 @@ class ObjectType:
     def draw(self, surface):
         surface.blit(self.TEXTURE, (self.rect.x, self.rect.y))
 
+    def set_size(self, x, y):
+        self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (x, y))
+        self.rect.width = x
+        self.rect.height = y
+
 
 class Floor(ObjectType):
 
@@ -102,6 +107,7 @@ class ExitDoor(InteractiveType):
 
     def __init__(self, pos_x, pos_y):
         super().__init__(self.EVENT, self.HOVER_EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+        self.set_size(self.OBJECT_WIDTH, 64)
 
     def on_interact(self):
         pygame.event.post(self.EVENT)
