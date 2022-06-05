@@ -18,9 +18,9 @@ class Player:
     PLAYER_WIDTH, PLAYER_HEIGHT = 32, 56
     SPAWN_X, SPAWN_Y = 0, 0
 
-    PLAYER_STILL = pygame.image.load(os.path.join('assets', 'sprites', 'hero_still.png'))
-    PLAYER_WALK_1 = pygame.image.load(os.path.join('assets', 'sprites', 'hero_walk_1.png'))
-    PLAYER_WALK_2 = pygame.image.load(os.path.join('assets', 'sprites', 'hero_walk_2.png'))
+    PLAYER_STILL = pygame.image.load(os.path.join('assets', 'sprites', 'player', 'hero_still.png'))
+    PLAYER_WALK_1 = pygame.image.load(os.path.join('assets', 'sprites', 'player', 'hero_walk_1.png'))
+    PLAYER_WALK_2 = pygame.image.load(os.path.join('assets', 'sprites', 'player', 'hero_walk_2.png'))
 
     PLAYER_LEFT = pygame.transform.scale(PLAYER_STILL, (PLAYER_WIDTH, PLAYER_HEIGHT))
     PLAYER_LEFT_WALK_1 = pygame.transform.scale(PLAYER_WALK_1, (PLAYER_WIDTH, PLAYER_HEIGHT))

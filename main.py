@@ -110,6 +110,8 @@ def main():
     state = CONTINUE
 
     player = Player()
+    pygame.player = player
+
     damage = NONE
     damage_frames = 0
 

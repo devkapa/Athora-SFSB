@@ -2,6 +2,7 @@ import pygame
 
 from player.player import Player
 from world.map_objects import ObjectType, Floor, Wall, ExitDoor, Air, Barrier, Grass, Dirt
+from world.npc import RobotEnemy, NPC
 
 
 class Map:
@@ -10,6 +11,8 @@ class Map:
 
     map_objects: list[ObjectType]
     spawn_point: ObjectType
+
+    map_npc: list[NPC]
 
     rect: pygame.Rect
     title: str
@@ -21,6 +24,7 @@ class Map:
         self.title = title
         self.layout = layout
         self.map_objects = []
+        self.map_npc = []
 
         for line_index, line in enumerate(split_layout):
             for char_index, char in enumerate(line):
@@ -40,15 +44,22 @@ class Map:
                     self.map_objects.append(Grass(char_index, line_index))
                 if char == "D":
                     self.map_objects.append(Dirt(char_index, line_index))
+                if char == "E":
+                    self.map_npc.append(RobotEnemy(char_index*32, line_index*32))
 
     def draw(self, surface):
         for obj in self.map_objects:
             obj.draw(surface)
+        for npc in self.map_npc:
+            npc.draw(surface)
 
     def scroll(self, vel_x, vel_y):
         for obj in self.map_objects:
             obj.rect.x += vel_x
             obj.rect.y += vel_y
+        for npc in self.map_npc:
+            npc.rect.x += vel_x
+            npc.rect.y += vel_y
 
     def get_spawn_point(self):
         return self.spawn_point
