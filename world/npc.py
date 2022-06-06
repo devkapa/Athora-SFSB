@@ -6,7 +6,7 @@ import pygame
 class Bullet:
 
     BULLET_WIDTH, BULLET_HEIGHT = 10, 5
-    COLOUR = (255, 0, 0)
+    BULLET_TEXTURE = pygame.image.load(os.path.join('assets', 'textures', 'bullet.png'))
     RIGHT, LEFT = 0, 1
 
     rect: pygame.Rect
@@ -17,7 +17,7 @@ class Bullet:
         self.facing = facing
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.COLOUR, self.rect)
+        surface.blit(self.BULLET_TEXTURE, (self.rect.x, self.rect.y))
 
 
 class NPC:
@@ -92,7 +92,7 @@ class RobotEnemy(NPC):
             self.alerted = False
             self.alerted_time = 0
 
-        if self.alerted_time > 0.25:
+        if self.alerted_time > 0:
             window.blit(self.alerted_image, (self.rect.x + self.rect.width / 2 - self.alerted_image.get_width() / 2,
                                              self.rect.y - 20))
         if self.alerted_time > 1:
@@ -105,4 +105,4 @@ class RobotEnemy(NPC):
 
             if len(pygame.level.map_bullets) < 3:
                 pygame.level.map_bullets.append(Bullet(x, y, self.FACING))
-                self.alerted_time = 0.25
+                self.alerted_time = 0
