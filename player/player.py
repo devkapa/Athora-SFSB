@@ -2,7 +2,7 @@ import os.path
 
 import pygame.image
 
-from world.map_objects import Wall, CollideType
+from world.map_objects import CollideType
 
 
 class Player:
@@ -76,11 +76,11 @@ class Player:
                     self.jumping = True
         else:
             if self.jump_height >= -64:
-                curve = (self.jump_height * abs(self.jump_height)) / 512
+                curve = (self.jump_height * abs(self.jump_height)) / 1024
                 if not self.check_collision(level, (self.rect.x, self.rect.y - curve)):
                     self.direction = (self.direction[self.RIGHT], self.direction[self.LEFT], True, False)
                     y_change -= curve
-                    self.jump_height -= 4
+                    self.jump_height -= 2
                 else:
                     self.jumping = False
                     self.jump_height = 64
@@ -96,6 +96,7 @@ class Player:
             if not self.check_collision(level, (self.rect.x + self.VELOCITY, self.rect.y)):
                 self.direction = (True, False, False, False)
                 x_change += self.VELOCITY
+
         if x_change != 0:
             if self.rect.x + x_change > window.get_width() * 0.75 and self.direction[self.RIGHT]:
                 level.scroll(-1, 0)
@@ -114,6 +115,7 @@ class Player:
                 level.scroll(0, self.GRAVITY)
                 y_change = 0
                 self.prev_pos_y += self.GRAVITY
+
         self.rect.x += x_change
         self.rect.y += y_change
 

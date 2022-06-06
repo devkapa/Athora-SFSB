@@ -7,6 +7,7 @@ import time
 from world.map import Map, Maps
 from player.player import Player
 from world.map_objects import InteractiveType, ExitDoor
+from world.npc import RobotEnemy
 
 pygame.font.init()
 
@@ -59,15 +60,32 @@ def create_overlay_surface(colour, alpha=180):
     return surface
 
 
-def draw_window(player, global_map, elapsed_time):
+def draw_window(player, level, elapsed_time):
     WIN.fill(BLACK)
     WIN.blit(BACKGROUND, (0, 0))
-    global_map.draw(WIN)
-    player.draw(WIN)
-    title = render_font(global_map.title, 28)
-    timer = render_font(str(elapsed_time), 20)
-    WIN.blit(title, (WIDTH - 5 - title.get_width(), 10))
-    WIN.blit(timer, (WIDTH - 5 - timer.get_width(), title.get_height() + title.get_height()/2))
+    level.draw(WIN)
+    if player.HEALTH > 0:
+        player.draw(WIN)
+        title = render_font(level.title, 28)
+        timer = render_font(str(elapsed_time), 20)
+        WIN.blit(title, (WIDTH - 5 - title.get_width(), 10))
+        WIN.blit(timer, (WIDTH - 5 - timer.get_width(), title.get_height() + title.get_height()/2))
+        draw_bullets(player, level)
+
+
+def draw_bullets(player, level):
+    for bullet in level.map_bullets:
+        if bullet.facing == bullet.LEFT:
+            bullet.rect.x -= 1
+        if bullet.facing == bullet.RIGHT:
+            bullet.rect.x += 1
+        if bullet.rect.x < 0 or bullet.rect.x > WIDTH:
+            level.map_bullets.remove(bullet)
+        elif bullet.rect.colliderect(player.rect):
+            player.change_hp(-1)
+            level.map_bullets.remove(bullet)
+        else:
+            bullet.draw(WIN)
 
 
 def draw_overlay(colour, title, subheading):
@@ -128,6 +146,7 @@ def main():
 
         clock.tick(FPS)
         current_level = levels.current
+        pygame.level = current_level
 
         for event in pygame.event.get():
 
@@ -175,6 +194,11 @@ def main():
         time_elapsed = datetime.timedelta(seconds=round((time.time() - start_time)))
 
         draw_window(player, current_level, time_elapsed)
+
+        for enemy in levels.current.map_npc:
+            if isinstance(enemy, RobotEnemy):
+                if enemy.alerted:
+                    enemy.alerted_time += 1 / FPS
 
         if damage != NONE:
             damage_frames += 1

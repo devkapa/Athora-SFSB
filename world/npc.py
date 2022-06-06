@@ -3,6 +3,23 @@ import os
 import pygame
 
 
+class Bullet:
+
+    BULLET_WIDTH, BULLET_HEIGHT = 10, 5
+    COLOUR = (255, 0, 0)
+    RIGHT, LEFT = 0, 1
+
+    rect: pygame.Rect
+    facing: int
+
+    def __init__(self, x, y, facing):
+        self.rect = pygame.Rect(x, y, self.BULLET_WIDTH, self.BULLET_HEIGHT)
+        self.facing = facing
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.COLOUR, self.rect)
+
+
 class NPC:
 
     HEALTH: int
@@ -45,10 +62,13 @@ class RobotEnemy(NPC):
     health = 10
 
     alerted = False
+    alerted_time = 0
     alerted_image = pygame.image.load(os.path.join('assets', 'textures', 'exclamation.png'))
 
     RADIUS_WIDTH, RADIUS_HEIGHT = 500, 150
     viewing_radius: pygame.Rect
+
+    last_bullet = -1
 
     def __init__(self, pos_x, pos_y):
         super().__init__(pos_x, pos_y, self.health, self.texture)
@@ -70,13 +90,19 @@ class RobotEnemy(NPC):
                 self.TEXTURE = self.TEXTURE_NORMAL
         else:
             self.alerted = False
+            self.alerted_time = 0
 
-        if self.alerted:
+        if self.alerted_time > 0.25:
             window.blit(self.alerted_image, (self.rect.x + self.rect.width / 2 - self.alerted_image.get_width() / 2,
                                              self.rect.y - 20))
+        if self.alerted_time > 1:
+            x = 0
+            y = self.rect.y + (self.rect.h / 2)
+            if self.FACING == self.LEFT:
+                x = self.rect.x
+            if self.FACING == self.RIGHT:
+                x = self.rect.x + self.rect.w
 
-        # DEBUG
-        surface = pygame.Surface((self.RADIUS_WIDTH, self.RADIUS_HEIGHT))
-        surface.set_alpha(50)
-        surface.fill(self.RED)
-        window.blit(surface, (self.viewing_radius.x, self.viewing_radius.y))
+            if len(pygame.level.map_bullets) < 3:
+                pygame.level.map_bullets.append(Bullet(x, y, self.FACING))
+                self.alerted_time = 0.25

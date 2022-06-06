@@ -2,7 +2,7 @@ import pygame
 
 from player.player import Player
 from world.map_objects import ObjectType, Floor, Wall, ExitDoor, Air, Barrier, Grass, Dirt
-from world.npc import RobotEnemy, NPC
+from world.npc import RobotEnemy, NPC, Bullet
 
 
 class Map:
@@ -13,6 +13,7 @@ class Map:
     spawn_point: ObjectType
 
     map_npc: list[NPC]
+    map_bullets: list[Bullet]
 
     rect: pygame.Rect
     title: str
@@ -25,6 +26,7 @@ class Map:
         self.layout = layout
         self.map_objects = []
         self.map_npc = []
+        self.map_bullets = []
 
         for line_index, line in enumerate(split_layout):
             for char_index, char in enumerate(line):
@@ -60,6 +62,9 @@ class Map:
         for npc in self.map_npc:
             npc.rect.x += vel_x
             npc.rect.y += vel_y
+        for bullet in self.map_bullets:
+            bullet.rect.x += vel_x
+            bullet.rect.y += vel_y
 
     def get_spawn_point(self):
         return self.spawn_point
