@@ -83,9 +83,9 @@ def draw_bullets(player, level):
             if npc.HEALTH <= 0:
                 level.map_npc.remove(npc)
         if bullet.facing == bullet.LEFT:
-            bullet.rect.x -= 1
+            bullet.rect.x -= 2
         if bullet.facing == bullet.RIGHT:
-            bullet.rect.x += 1
+            bullet.rect.x += 2
         if bullet.rect.x < 0 or bullet.rect.x > WIDTH:
             level.map_bullets.remove(bullet)
         elif bullet.rect.colliderect(player.rect) and isinstance(bullet.origin(), NPC):
@@ -183,8 +183,14 @@ def main():
                         continue
 
                     if event.key == pygame.K_m:
-                        if player.inventory[player.inventory_selected_slot] is not None:
+                        if 0 <= player.inventory_selected_slot < len(player.inventory):
                             player.inventory[player.inventory_selected_slot].use()
+
+                    if event.key == pygame.K_1:
+                        player.inventory_selected_slot = 1
+
+                    if event.key == pygame.K_2:
+                        player.inventory_selected_slot = 0
 
                     if event.key == pygame.K_f and hovering[0]:
                         hovering[1].on_interact()

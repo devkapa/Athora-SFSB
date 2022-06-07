@@ -59,6 +59,7 @@ class Player:
     INVENTORY_SIZE = 2
     INVENTORY_SLOT_SIZE = INVENTORY_SLOT_WIDTH, INVENTORY_SLOT_HEIGHT = 72, 72
     INVENTORY_SLOT_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'inventory_slot.png'))
+    INVENTORY_SLOT_SELECT = pygame.image.load(os.path.join('assets', 'textures', 'player', 'inventory_select.png'))
     INVENTORY_SLOT = pygame.transform.scale(INVENTORY_SLOT_IMG, INVENTORY_SLOT_SIZE)
     inventory: list[InventoryObject]
     inventory_selected_slot = 0
@@ -211,4 +212,7 @@ class Player:
             if len(self.inventory) >= slot + 1:
                 self.inventory[slot].draw(surface, slot, (surface.get_width() - last_slot,
                                                           surface.get_height() - self.INVENTORY_SLOT.get_height() - 20))
+            if slot == self.inventory_selected_slot:
+                surface.blit(self.INVENTORY_SLOT_SELECT, (surface.get_width() - last_slot + self.INVENTORY_SLOT.get_width() / 2 - self.INVENTORY_SLOT_SELECT.get_width() / 2,
+                                                          surface.get_height() - 15))
             last_slot += self.INVENTORY_SLOT.get_width() + self.INVENTORY_SLOT.get_width() / 4
