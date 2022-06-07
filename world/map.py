@@ -1,6 +1,6 @@
 import pygame
 
-from player.player import Player
+from user.player import Player
 from world.map_objects import ObjectType, Floor, Wall, ExitDoor, Air, Barrier, Grass, Dirt
 from world.npc import RobotEnemy, NPC, Bullet
 

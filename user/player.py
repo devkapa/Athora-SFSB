@@ -2,7 +2,7 @@ import os.path
 
 import pygame.image
 
-from player.inv_objects import InventoryObject, Gun
+from user.inv_objects import InventoryObject, Gun
 from world.map_objects import CollideType
 
 

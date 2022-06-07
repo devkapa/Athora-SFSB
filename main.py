@@ -5,7 +5,7 @@ import pygame
 import time
 
 from world.map import Map, Maps
-from player.player import Player
+from user.player import Player
 from world.map_objects import InteractiveType, ExitDoor
 from world.npc import RobotEnemy, NPC
 
