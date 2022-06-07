@@ -2,7 +2,6 @@ import datetime
 import os.path
 
 import pygame
-import time
 
 from world.map import Map, Maps
 from user.player import Player
@@ -67,8 +66,9 @@ def draw_window(player, level, elapsed_time):
     if player.HEALTH > 0:
         player.draw(WIN)
         title = render_font(level.title, 28)
-        timer = render_font(str(elapsed_time), 20)
+        timer = render_font(str(datetime.timedelta(seconds=round(elapsed_time))), 20)
         WIN.blit(title, (WIDTH - 5 - title.get_width(), 10))
+
         WIN.blit(timer, (WIDTH - 5 - timer.get_width(), title.get_height() + title.get_height()/2))
         draw_bullets(player, level)
 
@@ -134,7 +134,7 @@ def main():
     clock = pygame.time.Clock()
     running = True
 
-    start_time = time.time()
+    elapsed_time = 0
 
     state = CONTINUE
 
@@ -211,10 +211,9 @@ def main():
         if state == CONTINUE:
             keys_pressed = pygame.key.get_pressed()
             player.handle_movement(WIN, keys_pressed, current_level)
+            elapsed_time += 1 / FPS
 
-        time_elapsed = datetime.timedelta(seconds=round((time.time() - start_time)))
-
-        draw_window(player, current_level, time_elapsed)
+        draw_window(player, current_level, elapsed_time)
 
         for enemy in levels.current.map_npc:
             if isinstance(enemy, RobotEnemy):

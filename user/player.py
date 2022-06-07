@@ -86,7 +86,7 @@ class Player:
                 if keys_pressed[pygame.K_SPACE]:
                     self.jumping = True
         else:
-            if self.jump_height >= -64:
+            if self.jump_height >= -70:
                 curve = (self.jump_height * abs(self.jump_height)) / 1024
                 if not self.check_collision(level, (self.rect.x, self.rect.y - curve)):
                     self.direction = (self.direction[self.RIGHT], self.direction[self.LEFT], True, False)
@@ -94,10 +94,10 @@ class Player:
                     self.jump_height -= 2
                 else:
                     self.jumping = False
-                    self.jump_height = 64
+                    self.jump_height = 70
             else:
                 self.jumping = False
-                self.jump_height = 64
+                self.jump_height = 70
 
         if keys_pressed[pygame.K_a]:
             if not self.check_collision(level, (self.rect.x - self.VELOCITY, self.rect.y)):
@@ -154,6 +154,9 @@ class Player:
             if isinstance(map_object, CollideType):
                 if map_object.rect.colliderect(potential_rect):
                     return True
+        for npc in level.map_npc:
+            if npc.rect.colliderect(potential_rect):
+                return True
         return False
 
     def process_event(self, event):
