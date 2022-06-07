@@ -1,7 +1,8 @@
 import pygame
 
+from user.inv_objects import Potion
 from user.player import Player
-from world.map_objects import ObjectType, Floor, Wall, ExitDoor, Air, Barrier, Grass, Dirt
+from world.map_objects import ObjectType, Floor, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem
 from world.npc import RobotEnemy, NPC, Bullet
 
 
@@ -40,6 +41,8 @@ class Map:
                     self.map_objects.append(spawn)
                 if char == "T":
                     self.map_objects.append(ExitDoor(char_index, line_index))
+                if char == "P":
+                    self.map_objects.append(DroppedItem(char_index, line_index, Potion(2)))
                 if char == "B":
                     self.map_objects.append(Barrier(char_index, line_index))
                 if char == "G":

@@ -83,13 +83,11 @@ class InteractiveType(ObjectType):
 
     TEXTURE: pygame.Surface
     EVENT: pygame.event.Event
-    HOVER_EVENT: pygame.event.Event
     POPUP: str
 
-    def __init__(self, event, hover_event, popup, pos_x, pos_y, texture):
+    def __init__(self, event, popup, pos_x, pos_y, texture):
         super().__init__(pos_x, pos_y, texture)
         self.EVENT = event
-        self.HOVER_EVENT = hover_event
         self.POPUP = popup
 
     def on_interact(self):
@@ -101,14 +99,58 @@ class ExitDoor(InteractiveType):
     POPUP = "'F' to enter"
     ENTER = pygame.USEREVENT + 2
     EVENT = pygame.event.Event(ENTER)
-    HOVER = pygame.USEREVENT + 3
-    HOVER_EVENT = pygame.event.Event(ENTER)
     TEXTURE = 'trapdoor.png'
 
     def __init__(self, pos_x, pos_y):
-        super().__init__(self.EVENT, self.HOVER_EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
         self.set_size(self.OBJECT_WIDTH, 64)
 
     def on_interact(self):
         pygame.event.post(self.EVENT)
+
+
+class DroppedItem(InteractiveType):
+
+    GRAVITY = 2
+
+    POPUP = "'F' to pickup"
+    PICKUP = pygame.USEREVENT + 6
+    EVENT = pygame.event.Event(PICKUP)
+    INV_OBJECT = None
+
+    def __init__(self, pos_x, pos_y, inv_obj):
+        self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', 'items', inv_obj.TEXTURE_FILE)).convert_alpha()
+        self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (self.OBJECT_WIDTH, self.OBJECT_HEIGHT))
+        self.rect = pygame.Rect(pos_x*self.OBJECT_WIDTH, pos_y*self.OBJECT_HEIGHT, self.OBJECT_WIDTH, self.OBJECT_HEIGHT)
+        self.INV_OBJECT = inv_obj
+
+    def on_interact(self):
+        self.EVENT.item = self
+        pygame.event.post(self.EVENT)
+
+    def draw(self, surface):
+        self.handle_movement(pygame.level)
+        super().draw(surface)
+
+    def handle_movement(self, level):
+        x_change = 0
+        y_change = 0
+        if self.apply_gravity(level):
+            y_change = self.GRAVITY
+        self.rect.x += x_change
+        self.rect.y += y_change
+
+    def apply_gravity(self, level):
+        if not self.check_collision(level, (self.rect.x, self.rect.y + self.GRAVITY)):
+            return True
+        return False
+
+    def check_collision(self, level, change):
+        potential_rect = pygame.Rect(change[0], change[1], self.OBJECT_WIDTH, self.OBJECT_HEIGHT)
+        for map_object in level.map_objects:
+            if isinstance(map_object, CollideType):
+                if map_object.rect.colliderect(potential_rect):
+                    return True
+        return False
+
 

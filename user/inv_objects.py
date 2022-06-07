@@ -15,11 +15,13 @@ def render_font(text, px):
 class InventoryObject:
 
     NAME: str
+    TEXTURE_FILE: str
     TEXTURE: pygame.Surface
     TEXTURE_WIDTH, TEXTURE_HEIGHT = 72, 72
 
     def __init__(self, name, texture):
         self.NAME = name
+        self.TEXTURE_FILE = texture
         self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', 'items', texture))
         self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (self.TEXTURE_WIDTH, self.TEXTURE_HEIGHT))
 
@@ -31,6 +33,24 @@ class InventoryObject:
 
     def use(self):
         pass
+
+
+class Potion(InventoryObject):
+
+    NAME = 'Potion'
+    TEXTURE = 'potion.png'
+
+    DRINK = pygame.USEREVENT + 5
+    DRINK_EVENT = pygame.event.Event(DRINK)
+    hp: int
+
+    def __init__(self, hp=2):
+        super().__init__(self.NAME, self.TEXTURE)
+        self.hp = hp
+
+    def use(self):
+        self.DRINK_EVENT.potion = self
+        pygame.event.post(self.DRINK_EVENT)
 
 
 class Gun(InventoryObject):

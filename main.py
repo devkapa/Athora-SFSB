@@ -3,10 +3,10 @@ import os.path
 
 import pygame
 
-from user.inv_objects import Gun
+from user.inv_objects import Gun, Potion
 from world.map import Map, Maps
 from user.player import Player
-from world.map_objects import InteractiveType, ExitDoor, CollideType
+from world.map_objects import InteractiveType, ExitDoor, CollideType, DroppedItem
 from world.npc import RobotEnemy, NPC
 
 pygame.font.init()
@@ -189,11 +189,11 @@ def main():
                         continue
 
                     if event.key == pygame.K_m:
-                        if 0 <= player.inventory_selected_slot < len(player.inventory):
+                        if player.inventory[player.inventory_selected_slot] is not None:
                             player.inventory[player.inventory_selected_slot].use()
 
                     if event.key == pygame.K_r:
-                        if 0 <= player.inventory_selected_slot < len(player.inventory):
+                        if player.inventory[player.inventory_selected_slot] is not None:
                             selected = player.inventory[player.inventory_selected_slot]
                             if isinstance(selected, Gun):
                                 selected.reload()
@@ -219,6 +219,16 @@ def main():
 
                 if event.type == Gun.EMPTY_GUN:
                     gun_empty = True
+
+                if event.type == Potion.DRINK:
+                    potion = event.potion
+                    player.change_hp(potion.hp)
+                    slot = player.inventory.index(potion)
+                    player.inventory[slot] = None
+
+                if event.type == DroppedItem.PICKUP:
+                    item = event.item
+                    player.add_to_inventory(item)
 
                 player.process_event(event)
 

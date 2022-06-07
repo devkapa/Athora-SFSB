@@ -2,8 +2,8 @@ import os.path
 
 import pygame.image
 
-from user.inv_objects import InventoryObject, Gun
-from world.map_objects import CollideType
+from user.inv_objects import Gun
+from world.map_objects import CollideType, DroppedItem
 
 
 class Player:
@@ -61,7 +61,7 @@ class Player:
     INVENTORY_SLOT_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'inventory_slot.png'))
     INVENTORY_SLOT_SELECT = pygame.image.load(os.path.join('assets', 'textures', 'player', 'inventory_select.png'))
     INVENTORY_SLOT = pygame.transform.scale(INVENTORY_SLOT_IMG, INVENTORY_SLOT_SIZE)
-    inventory: list[InventoryObject]
+    inventory: list
     inventory_selected_slot = 0
 
     def __init__(self, spawn_x=0, spawn_y=0):
@@ -69,9 +69,7 @@ class Player:
         self.SPAWN_Y = spawn_y
         self.rect = pygame.Rect(self.SPAWN_X, self.SPAWN_Y, self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
         self.current_img = self.PLAYER_LEFT
-        self.inventory = []
-
-        self.inventory.append(Gun())
+        self.inventory = [Gun(), None]
 
     def handle_movement(self, window, keys_pressed, level):
         self.prev_pos_x = self.rect.x
@@ -183,7 +181,20 @@ class Player:
                 break
 
     def add_to_inventory(self, item):
-        self.inventory.append(item)
+        if self.inventory[self.inventory_selected_slot] is not None:
+            if self.inventory[1 - self.inventory_selected_slot] is not None:
+                current_item = self.inventory[self.inventory_selected_slot]
+                dropped_current_item = DroppedItem((self.rect.x + self.rect.width)/DroppedItem.OBJECT_WIDTH,
+                                                   self.rect.y/DroppedItem.OBJECT_HEIGHT, current_item)
+                pygame.level.map_objects.append(dropped_current_item)
+                self.inventory[self.inventory_selected_slot] = item.INV_OBJECT
+                pygame.level.map_objects.remove(item)
+            else:
+                self.inventory[1 - self.inventory_selected_slot] = item.INV_OBJECT
+                pygame.level.map_objects.remove(item)
+        else:
+            self.inventory[self.inventory_selected_slot] = item.INV_OBJECT
+            pygame.level.map_objects.remove(item)
 
     def draw(self, surface: pygame.Surface):
         # Player Walking Animation
@@ -212,7 +223,7 @@ class Player:
         for slot in range(self.INVENTORY_SIZE):
             surface.blit(self.INVENTORY_SLOT, (surface.get_width() - last_slot,
                                                surface.get_height() - self.INVENTORY_SLOT.get_height() - 20))
-            if len(self.inventory) >= slot + 1:
+            if self.inventory[slot] is not None:
                 self.inventory[slot].draw(surface, slot, (surface.get_width() - last_slot,
                                                           surface.get_height() - self.INVENTORY_SLOT.get_height() - 20))
             if slot == self.inventory_selected_slot:
