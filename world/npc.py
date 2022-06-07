@@ -2,6 +2,8 @@ import os
 
 import pygame
 
+from world.map_objects import CollideType
+
 
 class Bullet:
 
@@ -34,6 +36,8 @@ class NPC:
     HEALTH_BAR = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'health_bkg.png'))
     HEALTH_OVERLAY = 34
 
+    GRAVITY = 2
+
     GREEN = (0, 255, 0)
     YELLOW = (255, 255, 0)
     RED = (255, 0, 0)
@@ -65,7 +69,7 @@ class NPC:
             ovl_width = self.HEALTH_OVERLAY
             new_width = round(ovl_width*percent)
             ovl = pygame.Rect(self.rect.x + self.rect.width / 2 - self.HEALTH_OVERLAY / 2,
-                              self.rect.y + self.rect.height, new_width, 3)
+                              self.rect.y + self.rect.height, new_width, 4)
             if percent < 0.35:
                 pygame.draw.rect(window, self.RED, ovl)
             elif percent < 0.65:
@@ -73,8 +77,29 @@ class NPC:
             elif percent < 1:
                 pygame.draw.rect(window, self.GREEN, ovl)
 
+    def apply_gravity(self, level):
+        if not self.check_collision(level, (self.rect.x, self.rect.y + self.GRAVITY)):
+            return True
+        return False
+
+    def check_collision(self, level, change):
+        potential_rect = pygame.Rect(change[0], change[1], self.NPC_WIDTH, self.NPC_HEIGHT)
+        for map_object in level.map_objects:
+            if isinstance(map_object, CollideType):
+                if map_object.rect.colliderect(potential_rect):
+                    return True
+        return False
+
+    def handle_movement(self, level):
+        x_change = 0
+        y_change = 0
+        if self.apply_gravity(level):
+            y_change = self.GRAVITY
+        self.rect.x += x_change
+        self.rect.y += y_change
+
     def update(self, window):
-        pass
+        self.handle_movement(pygame.level)
 
     def change_health(self, amt):
         self.HEALTH += amt
@@ -104,6 +129,7 @@ class RobotEnemy(NPC):
                                           self.RADIUS_WIDTH, self.RADIUS_HEIGHT)
 
     def update(self, window):
+        super().update(window)
         self.viewing_radius.x = self.rect.x - self.RADIUS_WIDTH / 2 + self.NPC_WIDTH / 2
         self.viewing_radius.y = self.rect.y - self.RADIUS_HEIGHT / 2 + self.NPC_HEIGHT / 2
 
@@ -111,10 +137,10 @@ class RobotEnemy(NPC):
             self.alerted = True
             if pygame.player.rect.x + pygame.player.rect.width / 2 < self.viewing_radius.x + self.viewing_radius.width / 2:
                 self.FACING = self.LEFT
-                self.TEXTURE = self.TEXTURE_FLIPPED
+                self.TEXTURE = self.TEXTURE_NORMAL
             if pygame.player.rect.x + pygame.player.rect.width / 2 > self.viewing_radius.x + self.viewing_radius.width / 2:
                 self.FACING = self.RIGHT
-                self.TEXTURE = self.TEXTURE_NORMAL
+                self.TEXTURE = self.TEXTURE_FLIPPED
         else:
             self.alerted = False
             self.alerted_time = 0

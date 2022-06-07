@@ -3,9 +3,10 @@ import os.path
 
 import pygame
 
+from user.inv_objects import Gun
 from world.map import Map, Maps
 from user.player import Player
-from world.map_objects import InteractiveType, ExitDoor
+from world.map_objects import InteractiveType, ExitDoor, CollideType
 from world.npc import RobotEnemy, NPC
 
 pygame.font.init()
@@ -59,18 +60,18 @@ def create_overlay_surface(colour, alpha=180):
     return surface
 
 
-def draw_window(player, level, elapsed_time):
+def draw_window(player, level, elapsed_time, state):
     WIN.fill(BLACK)
     WIN.blit(BACKGROUND, (0, 0))
     level.draw(WIN)
     if player.HEALTH > 0:
+        if state == CONTINUE:
+            draw_bullets(player, level)
         player.draw(WIN)
         title = render_font(level.title, 28)
         timer = render_font(str(datetime.timedelta(seconds=round(elapsed_time))), 20)
         WIN.blit(title, (WIDTH - 5 - title.get_width(), 10))
-
         WIN.blit(timer, (WIDTH - 5 - timer.get_width(), title.get_height() + title.get_height()/2))
-        draw_bullets(player, level)
 
 
 def draw_bullets(player, level):
@@ -93,6 +94,8 @@ def draw_bullets(player, level):
             player.change_hp(-1)
             level.map_bullets.remove(bullet)
         elif npc_collision:
+            level.map_bullets.remove(bullet)
+        elif any(wall.rect.colliderect(bullet.rect) and isinstance(wall, CollideType) for wall in level.map_objects):
             level.map_bullets.remove(bullet)
         else:
             bullet.draw(WIN)
@@ -119,13 +122,13 @@ def check_for_interactions(global_map, player):
     for map_object in global_map.map_objects:
         if isinstance(map_object, InteractiveType):
             if map_object.rect.colliderect(player.rect):
-                draw_popup(map_object, player)
+                draw_popup(map_object.POPUP, player)
                 return True, map_object
     return False, None
 
 
-def draw_popup(interactive, player):
-    popup_text = render_font(interactive.POPUP, 10)
+def draw_popup(text, player):
+    popup_text = render_font(text, 10)
     WIN.blit(popup_text, (player.rect.x + player.PLAYER_WIDTH / 2 - popup_text.get_width() / 2,
                           player.rect.y - player.PLAYER_HEIGHT / 2))
 
@@ -140,6 +143,7 @@ def main():
 
     player = Player()
     pygame.player = player
+    gun_empty = False
 
     damage = NONE
     damage_frames = 0
@@ -188,6 +192,13 @@ def main():
                         if 0 <= player.inventory_selected_slot < len(player.inventory):
                             player.inventory[player.inventory_selected_slot].use()
 
+                    if event.key == pygame.K_r:
+                        if 0 <= player.inventory_selected_slot < len(player.inventory):
+                            selected = player.inventory[player.inventory_selected_slot]
+                            if isinstance(selected, Gun):
+                                selected.reload()
+                                gun_empty = False
+
                     if event.key == pygame.K_1:
                         player.inventory_selected_slot = 1
 
@@ -206,6 +217,9 @@ def main():
                 if event.type == ExitDoor.ENTER:
                     levels + 1
 
+                if event.type == Gun.EMPTY_GUN:
+                    gun_empty = True
+
                 player.process_event(event)
 
         if state == CONTINUE:
@@ -213,12 +227,15 @@ def main():
             player.handle_movement(WIN, keys_pressed, current_level)
             elapsed_time += 1 / FPS
 
-        draw_window(player, current_level, elapsed_time)
+        draw_window(player, current_level, elapsed_time, state)
 
         for enemy in levels.current.map_npc:
             if isinstance(enemy, RobotEnemy):
                 if enemy.alerted:
                     enemy.alerted_time += 1 / FPS
+
+        if gun_empty:
+            draw_popup(Gun.RELOAD_TEXT, player)
 
         if damage != NONE:
             damage_frames += 1
