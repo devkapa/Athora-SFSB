@@ -12,7 +12,7 @@ class ObjectType:
     rect: pygame.Rect
 
     def __init__(self, pos_x, pos_y, texture):
-        self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', texture)).convert_alpha()
+        self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', 'tiles', texture)).convert_alpha()
         self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (self.OBJECT_WIDTH, self.OBJECT_HEIGHT))
         self.rect = pygame.Rect(pos_x*self.OBJECT_WIDTH, pos_y*self.OBJECT_HEIGHT, self.OBJECT_WIDTH, self.OBJECT_HEIGHT)
 

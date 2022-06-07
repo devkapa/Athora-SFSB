@@ -2,11 +2,11 @@ import os.path
 
 import pygame.image
 
+from player.inv_objects import InventoryObject, Gun
 from world.map_objects import CollideType
 
 
 class Player:
-
     VELOCITY = 1
 
     HEALTH = 10
@@ -35,8 +35,8 @@ class Player:
 
     HEART_WIDTH, HEART_HEIGHT = 36, 36
 
-    FULL_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'full_heart.png'))
-    EMPTY_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'empty_heart.png'))
+    FULL_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'full_heart.png'))
+    EMPTY_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'empty_heart.png'))
 
     FULL_HEART = pygame.transform.scale(FULL_HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
     EMPTY_HEART = pygame.transform.scale(EMPTY_HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
@@ -56,11 +56,21 @@ class Player:
     jump_height = 64
     jumping = False
 
+    INVENTORY_SIZE = 2
+    INVENTORY_SLOT_SIZE = INVENTORY_SLOT_WIDTH, INVENTORY_SLOT_HEIGHT = 72, 72
+    INVENTORY_SLOT_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'inventory_slot.png'))
+    INVENTORY_SLOT = pygame.transform.scale(INVENTORY_SLOT_IMG, INVENTORY_SLOT_SIZE)
+    inventory: list[InventoryObject]
+    inventory_selected_slot = 0
+
     def __init__(self, spawn_x=0, spawn_y=0):
         self.SPAWN_X = spawn_x
         self.SPAWN_Y = spawn_y
         self.rect = pygame.Rect(self.SPAWN_X, self.SPAWN_Y, self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
         self.current_img = self.PLAYER_LEFT
+        self.inventory = []
+
+        self.inventory.append(Gun())
 
     def handle_movement(self, window, keys_pressed, level):
         self.prev_pos_x = self.rect.x
@@ -160,15 +170,19 @@ class Player:
         per_frame = self.ANIMATION_SPEED
         if self.moving()[1] == direction:
             for index, frame in enumerate(frame_list):
-                if self.animation_frame_count < per_frame*len(frame_list):
-                    if self.animation_frame_count < per_frame*(index+1):
+                if self.animation_frame_count < per_frame * len(frame_list):
+                    if self.animation_frame_count < per_frame * (index + 1):
                         self.current_img = frame
                         break
                     continue
                 self.animation_frame_count = 0
                 break
 
-    def draw(self, surface):
+    def add_to_inventory(self, item):
+        self.inventory.append(item)
+
+    def draw(self, surface: pygame.Surface):
+        # Player Walking Animation
         if self.moving()[0]:
             self.walking_animation(self.RIGHT, self.PLAYER_RIGHT_WALKING)
             self.walking_animation(self.LEFT, self.PLAYER_LEFT_WALKING)
@@ -180,6 +194,7 @@ class Player:
             if self.direction[self.LEFT]:
                 self.current_img = self.PLAYER_LEFT
         surface.blit(self.current_img, (self.rect.x, self.rect.y))
+        # Player Hearts
         last_heart = 5
         for heart in range(self.HEALTH):
             surface.blit(self.FULL_HEART, (last_heart, 5))
@@ -188,3 +203,12 @@ class Player:
             if heart < 10:
                 surface.blit(self.EMPTY_HEART, (last_heart, 5))
                 last_heart += self.HEART_WIDTH + 5
+        # Player Inventory
+        last_slot = 15 + self.INVENTORY_SLOT.get_width()
+        for slot in range(self.INVENTORY_SIZE):
+            surface.blit(self.INVENTORY_SLOT, (surface.get_width() - last_slot,
+                                               surface.get_height() - self.INVENTORY_SLOT.get_height() - 20))
+            if len(self.inventory) >= slot + 1:
+                self.inventory[slot].draw(surface, slot, (surface.get_width() - last_slot,
+                                                          surface.get_height() - self.INVENTORY_SLOT.get_height() - 20))
+            last_slot += self.INVENTORY_SLOT.get_width() + self.INVENTORY_SLOT.get_width() / 4

@@ -7,7 +7,7 @@ import time
 from world.map import Map, Maps
 from player.player import Player
 from world.map_objects import InteractiveType, ExitDoor
-from world.npc import RobotEnemy
+from world.npc import RobotEnemy, NPC
 
 pygame.font.init()
 
@@ -23,7 +23,7 @@ WIDTH, HEIGHT = 832, 640
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Athora: SpaceF Strikes Back")
 
-ICON = pygame.image.load(os.path.join('assets', 'textures', 'wall.png'))
+ICON = pygame.image.load(os.path.join('assets', 'textures', 'tiles', 'wall.png'))
 pygame.display.set_icon(ICON)
 
 BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'night_sky.jpg')).convert_alpha()
@@ -74,15 +74,24 @@ def draw_window(player, level, elapsed_time):
 
 
 def draw_bullets(player, level):
+    npc_collision = False
     for bullet in level.map_bullets:
+        for npc in level.map_npc:
+            if bullet.rect.colliderect(npc.rect) and isinstance(bullet.origin(), Player):
+                npc.change_health(-1)
+                npc_collision = True
+            if npc.HEALTH <= 0:
+                level.map_npc.remove(npc)
         if bullet.facing == bullet.LEFT:
             bullet.rect.x -= 1
         if bullet.facing == bullet.RIGHT:
             bullet.rect.x += 1
         if bullet.rect.x < 0 or bullet.rect.x > WIDTH:
             level.map_bullets.remove(bullet)
-        elif bullet.rect.colliderect(player.rect):
+        elif bullet.rect.colliderect(player.rect) and isinstance(bullet.origin(), NPC):
             player.change_hp(-1)
+            level.map_bullets.remove(bullet)
+        elif npc_collision:
             level.map_bullets.remove(bullet)
         else:
             bullet.draw(WIN)
@@ -172,6 +181,10 @@ def main():
                     if event.key == pygame.K_p:
                         state = PAUSED
                         continue
+
+                    if event.key == pygame.K_m:
+                        if player.inventory[player.inventory_selected_slot] is not None:
+                            player.inventory[player.inventory_selected_slot].use()
 
                     if event.key == pygame.K_f and hovering[0]:
                         hovering[1].on_interact()

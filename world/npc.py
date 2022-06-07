@@ -6,23 +6,30 @@ import pygame
 class Bullet:
 
     BULLET_WIDTH, BULLET_HEIGHT = 10, 5
-    BULLET_TEXTURE = pygame.image.load(os.path.join('assets', 'textures', 'bullet.png'))
+    BULLET_TEXTURE = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'bullet.png'))
     RIGHT, LEFT = 0, 1
+
+    ORIGIN = None
 
     rect: pygame.Rect
     facing: int
 
-    def __init__(self, x, y, facing):
+    def __init__(self, x, y, facing, origin):
         self.rect = pygame.Rect(x, y, self.BULLET_WIDTH, self.BULLET_HEIGHT)
         self.facing = facing
+        self.ORIGIN = origin
 
     def draw(self, surface):
         surface.blit(self.BULLET_TEXTURE, (self.rect.x, self.rect.y))
+
+    def origin(self):
+        return self.ORIGIN
 
 
 class NPC:
 
     HEALTH: int
+    MAX_HEALTH: int
 
     TEXTURE: pygame.Surface
     NPC_WIDTH, NPC_HEIGHT = 32, 56
@@ -41,10 +48,14 @@ class NPC:
         self.TEXTURE = self.TEXTURE_NORMAL
         self.rect = pygame.Rect(pos_x, pos_y, self.NPC_WIDTH, self.NPC_HEIGHT)
         self.HEALTH = health
+        self.MAX_HEALTH = health
 
     def draw(self, window):
         self.update(window)
         window.blit(self.TEXTURE, (self.rect.x, self.rect.y))
+        if self.HEALTH < self.MAX_HEALTH:
+            # If health is not at the maximum, put code here to draw a health bar
+            pass
 
     def update(self, window):
         pass
@@ -63,7 +74,7 @@ class RobotEnemy(NPC):
 
     alerted = False
     alerted_time = 0
-    alerted_image = pygame.image.load(os.path.join('assets', 'textures', 'exclamation.png'))
+    alerted_image = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'exclamation.png'))
 
     RADIUS_WIDTH, RADIUS_HEIGHT = 500, 150
     viewing_radius: pygame.Rect
@@ -103,6 +114,10 @@ class RobotEnemy(NPC):
             if self.FACING == self.RIGHT:
                 x = self.rect.x + self.rect.w
 
-            if len(pygame.level.map_bullets) < 3:
-                pygame.level.map_bullets.append(Bullet(x, y, self.FACING))
+            own_bullets = 0
+            for bullet in pygame.level.map_bullets:
+                if bullet.origin() == self:
+                    own_bullets += 1
+            if own_bullets < 3:
+                pygame.level.map_bullets.append(Bullet(x, y, self.FACING, self))
                 self.alerted_time = 0
