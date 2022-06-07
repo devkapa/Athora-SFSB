@@ -35,7 +35,7 @@ class InventoryObject:
 
 class Gun(InventoryObject):
 
-    NAME = 'Gun'
+    NAME = 'Pistol'
     TEXTURE = 'gun.png'
 
     def __init__(self):

@@ -75,7 +75,8 @@ def draw_window(player, level, elapsed_time):
 
 def draw_bullets(player, level):
     npc_collision = False
-    for bullet in level.map_bullets:
+    bullets = level.map_bullets.copy()
+    for bullet in bullets:
         for npc in level.map_npc:
             if bullet.rect.colliderect(npc.rect) and isinstance(bullet.origin(), Player):
                 npc.change_health(-1)
@@ -95,6 +96,7 @@ def draw_bullets(player, level):
             level.map_bullets.remove(bullet)
         else:
             bullet.draw(WIN)
+        npc_collision = False
 
 
 def draw_overlay(colour, title, subheading):
