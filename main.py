@@ -192,6 +192,9 @@ def main():
                         if player.inventory[player.inventory_selected_slot] is not None:
                             player.inventory[player.inventory_selected_slot].use()
 
+                    if event.key == pygame.K_q:
+                        player.remove_from_inventory()
+
                     if event.key == pygame.K_r:
                         if player.inventory[player.inventory_selected_slot] is not None:
                             selected = player.inventory[player.inventory_selected_slot]

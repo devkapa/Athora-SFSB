@@ -191,10 +191,19 @@ class Player:
                 pygame.level.map_objects.remove(item)
             else:
                 self.inventory[1 - self.inventory_selected_slot] = item.INV_OBJECT
+                self.inventory_selected_slot = 1 - self.inventory_selected_slot
                 pygame.level.map_objects.remove(item)
         else:
             self.inventory[self.inventory_selected_slot] = item.INV_OBJECT
             pygame.level.map_objects.remove(item)
+
+    def remove_from_inventory(self):
+        if self.inventory[self.inventory_selected_slot] is not None:
+            current_item = self.inventory[self.inventory_selected_slot]
+            dropped_current_item = DroppedItem((self.rect.x + self.rect.width)/DroppedItem.OBJECT_WIDTH,
+                                               self.rect.y/DroppedItem.OBJECT_HEIGHT, current_item)
+            pygame.level.map_objects.append(dropped_current_item)
+            self.inventory[self.inventory_selected_slot] = None
 
     def draw(self, surface: pygame.Surface):
         # Player Walking Animation

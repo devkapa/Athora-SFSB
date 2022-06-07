@@ -113,7 +113,7 @@ class DroppedItem(InteractiveType):
 
     GRAVITY = 2
 
-    POPUP = "'F' to pickup"
+    POPUP = "'F' to pickup "
     PICKUP = pygame.USEREVENT + 6
     EVENT = pygame.event.Event(PICKUP)
     INV_OBJECT = None
@@ -124,6 +124,7 @@ class DroppedItem(InteractiveType):
         self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (self.OBJECT_WIDTH, self.OBJECT_HEIGHT))
         self.rect = pygame.Rect(pos_x*self.OBJECT_WIDTH, pos_y*self.OBJECT_HEIGHT, self.OBJECT_WIDTH, self.OBJECT_HEIGHT)
         self.INV_OBJECT = inv_obj
+        self.POPUP += self.INV_OBJECT.NAME
 
     def on_interact(self):
         self.EVENT.item = self
