@@ -31,6 +31,13 @@ class NPC:
     HEALTH: int
     MAX_HEALTH: int
 
+    HEALTH_BAR = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'health_bkg.png'))
+    HEALTH_OVERLAY = 34
+
+    GREEN = (0, 255, 0)
+    YELLOW = (255, 255, 0)
+    RED = (255, 0, 0)
+
     TEXTURE: pygame.Surface
     NPC_WIDTH, NPC_HEIGHT = 32, 56
 
@@ -38,8 +45,6 @@ class NPC:
     FACING = RIGHT
 
     rect: pygame.Rect
-
-    RED = (255, 0, 0)
 
     def __init__(self, pos_x, pos_y, health, texture):
         self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'sprites', 'npc', texture))
@@ -54,8 +59,19 @@ class NPC:
         self.update(window)
         window.blit(self.TEXTURE, (self.rect.x, self.rect.y))
         if self.HEALTH < self.MAX_HEALTH:
-            # If health is not at the maximum, put code here to draw a health bar
-            pass
+            window.blit(self.HEALTH_BAR, (self.rect.x + self.rect.width / 2 - self.HEALTH_BAR.get_width() / 2,
+                                          self.rect.y + self.rect.height))
+            percent = self.HEALTH / self.MAX_HEALTH
+            ovl_width = self.HEALTH_OVERLAY
+            new_width = round(ovl_width*percent)
+            ovl = pygame.Rect(self.rect.x + self.rect.width / 2 - self.HEALTH_OVERLAY / 2,
+                              self.rect.y + self.rect.height, new_width, 3)
+            if percent < 0.35:
+                pygame.draw.rect(window, self.RED, ovl)
+            elif percent < 0.65:
+                pygame.draw.rect(window, self.YELLOW, ovl)
+            elif percent < 1:
+                pygame.draw.rect(window, self.GREEN, ovl)
 
     def update(self, window):
         pass
