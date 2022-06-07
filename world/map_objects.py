@@ -11,8 +11,8 @@ class ObjectType:
 
     rect: pygame.Rect
 
-    def __init__(self, pos_x, pos_y, texture):
-        self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', 'tiles', texture)).convert_alpha()
+    def __init__(self, pos_x, pos_y, texture, path=None):
+        self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', 'tiles', texture) if path is None else path).convert_alpha()
         self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (self.OBJECT_WIDTH, self.OBJECT_HEIGHT))
         self.rect = pygame.Rect(pos_x*self.OBJECT_WIDTH, pos_y*self.OBJECT_HEIGHT, self.OBJECT_WIDTH, self.OBJECT_HEIGHT)
 
@@ -85,8 +85,8 @@ class InteractiveType(ObjectType):
     EVENT: pygame.event.Event
     POPUP: str
 
-    def __init__(self, event, popup, pos_x, pos_y, texture):
-        super().__init__(pos_x, pos_y, texture)
+    def __init__(self, event, popup, pos_x, pos_y, texture, path=None):
+        super().__init__(pos_x, pos_y, texture, path)
         self.EVENT = event
         self.POPUP = popup
 
@@ -119,6 +119,7 @@ class DroppedItem(InteractiveType):
     INV_OBJECT = None
 
     def __init__(self, pos_x, pos_y, inv_obj):
+        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, None, path=os.path.join('assets', 'textures', 'items', inv_obj.TEXTURE_FILE))
         self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', 'items', inv_obj.TEXTURE_FILE)).convert_alpha()
         self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (self.OBJECT_WIDTH, self.OBJECT_HEIGHT))
         self.rect = pygame.Rect(pos_x*self.OBJECT_WIDTH, pos_y*self.OBJECT_HEIGHT, self.OBJECT_WIDTH, self.OBJECT_HEIGHT)
