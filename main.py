@@ -17,7 +17,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 GRAY = (168, 168, 168)
 BLACK = (0, 0, 0)
-POTION = (157, 161, 228)
+POTION = (111, 142, 109)
 
 WIDTH, HEIGHT = 832, 640
 WIN = pygame.display.set_mode((WIDTH, HEIGHT), flags, 8)
