@@ -18,9 +18,9 @@ class Player:
     PLAYER_WIDTH, PLAYER_HEIGHT = 32, 56
     SPAWN_X, SPAWN_Y = 0, 0
 
-    PLAYER_STILL = pygame.image.load(os.path.join('assets', 'sprites', 'player', 'hero_still.png'))
-    PLAYER_WALK_1 = pygame.image.load(os.path.join('assets', 'sprites', 'player', 'hero_walk_1.png'))
-    PLAYER_WALK_2 = pygame.image.load(os.path.join('assets', 'sprites', 'player', 'hero_walk_2.png'))
+    PLAYER_STILL = pygame.image.load(os.path.join('assets', 'sprites', 'player', 'hero_still.png')).convert_alpha()
+    PLAYER_WALK_1 = pygame.image.load(os.path.join('assets', 'sprites', 'player', 'hero_walk_1.png')).convert_alpha()
+    PLAYER_WALK_2 = pygame.image.load(os.path.join('assets', 'sprites', 'player', 'hero_walk_2.png')).convert_alpha()
 
     PLAYER_LEFT = pygame.transform.scale(PLAYER_STILL, (PLAYER_WIDTH, PLAYER_HEIGHT))
     PLAYER_LEFT_WALK_1 = pygame.transform.scale(PLAYER_WALK_1, (PLAYER_WIDTH, PLAYER_HEIGHT))
@@ -35,8 +35,8 @@ class Player:
 
     HEART_WIDTH, HEART_HEIGHT = 36, 36
 
-    FULL_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'full_heart.png'))
-    EMPTY_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'empty_heart.png'))
+    FULL_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'full_heart.png')).convert_alpha()
+    EMPTY_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'empty_heart.png')).convert_alpha()
 
     FULL_HEART = pygame.transform.scale(FULL_HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
     EMPTY_HEART = pygame.transform.scale(EMPTY_HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
@@ -58,8 +58,8 @@ class Player:
 
     INVENTORY_SIZE = 2
     INVENTORY_SLOT_SIZE = INVENTORY_SLOT_WIDTH, INVENTORY_SLOT_HEIGHT = 72, 72
-    INVENTORY_SLOT_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'inventory_slot.png'))
-    INVENTORY_SLOT_SELECT = pygame.image.load(os.path.join('assets', 'textures', 'player', 'inventory_select.png'))
+    INVENTORY_SLOT_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'inventory_slot.png')).convert_alpha()
+    INVENTORY_SLOT_SELECT = pygame.image.load(os.path.join('assets', 'textures', 'player', 'inventory_select.png')).convert_alpha()
     INVENTORY_SLOT = pygame.transform.scale(INVENTORY_SLOT_IMG, INVENTORY_SLOT_SIZE)
     inventory: list
     inventory_selected_slot = 0

@@ -22,7 +22,7 @@ class InventoryObject:
     def __init__(self, name, texture):
         self.NAME = name
         self.TEXTURE_FILE = texture
-        self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', 'items', texture))
+        self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', 'items', texture)).convert_alpha()
         self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (self.TEXTURE_WIDTH, self.TEXTURE_HEIGHT))
 
     def draw(self, surface, index, slot):

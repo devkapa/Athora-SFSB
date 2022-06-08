@@ -3,13 +3,12 @@ import os.path
 
 import pygame
 
-from user.inv_objects import Gun, Potion
-from world.map import Map, Maps
-from user.player import Player
-from world.map_objects import InteractiveType, ExitDoor, CollideType, DroppedItem, Sign
-from world.npc import RobotEnemy, NPC
+from pygame.locals import *
+
+flags = DOUBLEBUF
 
 pygame.font.init()
+pygame.display.init()
 
 WHITE = (255, 255, 255)
 AQUA = (0, 255, 255)
@@ -21,22 +20,30 @@ BLACK = (0, 0, 0)
 POTION = (157, 161, 228)
 
 WIDTH, HEIGHT = 832, 640
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+WIN = pygame.display.set_mode((WIDTH, HEIGHT), flags, 8)
+WIN.set_alpha(None)
 pygame.display.set_caption("Athora: SpaceF Strikes Back")
 
 ICON = pygame.image.load(os.path.join('assets', 'textures', 'tiles', 'wall.png'))
 pygame.display.set_icon(ICON)
 
-BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'night_sky.jpg')).convert_alpha()
+BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'night_sky.jpg')).convert()
 
 SIGNPOST_WIDTH, SIGNPOST_HEIGHT = 600, 120
-SIGNPOST_IMG = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'signpost.png')).convert_alpha()
-SIGNPOST = pygame.transform.scale(SIGNPOST_IMG, (SIGNPOST_WIDTH, SIGNPOST_HEIGHT)).convert_alpha()
+SIGNPOST_IMG = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'signpost.png')).convert()
+SIGNPOST = pygame.transform.scale(SIGNPOST_IMG, (SIGNPOST_WIDTH, SIGNPOST_HEIGHT))
 
 FPS = 144
 TITLE, PAUSED, CONTINUE = -1, 0, 1
 DEDUCT, NONE, GAIN = -1, 0, 1
 SIGN_OPEN, SIGN_OBJ = 0, 1
+
+
+from user.inv_objects import Gun, Potion
+from user.player import Player
+from world.map import Map, Maps
+from world.map_objects import InteractiveType, ExitDoor, CollideType, DroppedItem, Sign
+from world.npc import RobotEnemy, NPC
 
 
 def get_levels():
@@ -56,7 +63,7 @@ def level_sorter(x):
 
 def render_font(text, px):
     font = pygame.font.Font(os.path.join('assets', 'fonts', 'pressstart.ttf'), px)
-    return font.render(text, True, WHITE)
+    return font.render(text, False, WHITE)
 
 
 def create_overlay_surface(colour, alpha=180):
@@ -77,7 +84,7 @@ def draw_window(player, level, elapsed_time, state):
         title = render_font(level.title, 28)
         timer = render_font(str(datetime.timedelta(seconds=round(elapsed_time))), 20)
         WIN.blit(title, (WIDTH - 5 - title.get_width(), 10))
-        WIN.blit(timer, (WIDTH - 5 - timer.get_width(), title.get_height() + title.get_height()/2))
+        WIN.blit(timer, (WIDTH - 5 - timer.get_width(), title.get_height() + title.get_height() / 2))
 
 
 def draw_bullets(player, level):
@@ -153,8 +160,8 @@ def draw_sign(text):
 
 def draw_title_screen():
     WIN.blit(BACKGROUND, (0, 0))
-    start_button = pygame.Rect(WIDTH/2 - 100, HEIGHT/2 + 50, 200, 75)
-    quit_button = pygame.Rect(WIDTH/2 - 100, HEIGHT/2 + 150, 200, 75)
+    start_button = pygame.Rect(WIDTH / 2 - 100, HEIGHT / 2 + 50, 200, 75)
+    quit_button = pygame.Rect(WIDTH / 2 - 100, HEIGHT / 2 + 150, 200, 75)
     logo = render_font("Athora", 60)
     sub_logo = render_font("SpaceF Strikes Back", 15)
     if start_button.collidepoint(pygame.mouse.get_pos()):
@@ -165,10 +172,10 @@ def draw_title_screen():
         quit_text = render_font("Quit", 35)
     else:
         quit_text = render_font("Quit", 30)
-    WIN.blit(logo, (WIDTH/2 - logo.get_width()/2, HEIGHT/2 - 150 + logo.get_height()/2))
-    WIN.blit(sub_logo, (WIDTH/2 - sub_logo.get_width()/2, HEIGHT/2 - 50 + sub_logo.get_height()/2))
-    WIN.blit(start_text, (WIDTH/2 - start_text.get_width()/2, HEIGHT/2 + 50 + start_text.get_height()/2))
-    WIN.blit(quit_text, (WIDTH/2 - quit_text.get_width()/2, HEIGHT/2 + 150 + quit_text.get_height()/2))
+    WIN.blit(logo, (WIDTH / 2 - logo.get_width() / 2, HEIGHT / 2 - 150 + logo.get_height() / 2))
+    WIN.blit(sub_logo, (WIDTH / 2 - sub_logo.get_width() / 2, HEIGHT / 2 - 50 + sub_logo.get_height() / 2))
+    WIN.blit(start_text, (WIDTH / 2 - start_text.get_width() / 2, HEIGHT / 2 + 50 + start_text.get_height() / 2))
+    WIN.blit(quit_text, (WIDTH / 2 - quit_text.get_width() / 2, HEIGHT / 2 + 150 + quit_text.get_height() / 2))
     return start_button, quit_button
 
 

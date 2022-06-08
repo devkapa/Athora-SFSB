@@ -8,7 +8,7 @@ from world.map_objects import CollideType
 class Bullet:
 
     BULLET_WIDTH, BULLET_HEIGHT = 10, 5
-    BULLET_TEXTURE = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'bullet.png'))
+    BULLET_TEXTURE = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'bullet.png')).convert_alpha()
     RIGHT, LEFT = 0, 1
 
     ORIGIN = None
@@ -33,7 +33,7 @@ class NPC:
     HEALTH: int
     MAX_HEALTH: int
 
-    HEALTH_BAR = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'health_bkg.png'))
+    HEALTH_BAR = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'health_bkg.png')).convert_alpha()
     HEALTH_OVERLAY = 34
 
     GRAVITY = 2
@@ -51,7 +51,7 @@ class NPC:
     rect: pygame.Rect
 
     def __init__(self, pos_x, pos_y, health, texture):
-        self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'sprites', 'npc', texture))
+        self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'sprites', 'npc', texture)).convert_alpha()
         self.TEXTURE_NORMAL = pygame.transform.scale(self.TEXTURE_IMG, (self.NPC_WIDTH, self.NPC_HEIGHT))
         self.TEXTURE_FLIPPED = pygame.transform.flip(self.TEXTURE_NORMAL, True, False)
         self.TEXTURE = self.TEXTURE_NORMAL
@@ -115,7 +115,7 @@ class RobotEnemy(NPC):
 
     alerted = False
     alerted_time = 0
-    alerted_image = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'exclamation.png'))
+    alerted_image = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'exclamation.png')).convert_alpha()
 
     RADIUS_WIDTH, RADIUS_HEIGHT = 500, 150
     viewing_radius: pygame.Rect
