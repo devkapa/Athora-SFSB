@@ -88,4 +88,5 @@ class Gun(InventoryObject):
         self.chamber -= 1
 
     def reload(self):
-        self.chamber = 3
+        if self.chamber == 0:
+            self.chamber = 3

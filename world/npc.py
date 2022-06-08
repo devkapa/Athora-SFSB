@@ -147,7 +147,7 @@ class RobotEnemy(NPC):
 
         if self.alerted_time > 0:
             window.blit(self.alerted_image, (self.rect.x + self.rect.width / 2 - self.alerted_image.get_width() / 2,
-                                             self.rect.y - 20))
+                                             self.rect.y - self.alerted_image.get_height()))
         if self.alerted_time > 1:
             x = 0
             y = self.rect.y + (self.rect.h / 2)
