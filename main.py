@@ -6,7 +6,7 @@ import pygame
 from user.inv_objects import Gun, Potion
 from world.map import Map, Maps
 from user.player import Player
-from world.map_objects import InteractiveType, ExitDoor, CollideType, DroppedItem
+from world.map_objects import InteractiveType, ExitDoor, CollideType, DroppedItem, Sign
 from world.npc import RobotEnemy, NPC
 
 pygame.font.init()
@@ -26,11 +26,16 @@ pygame.display.set_caption("Athora: SpaceF Strikes Back")
 ICON = pygame.image.load(os.path.join('assets', 'textures', 'tiles', 'wall.png'))
 pygame.display.set_icon(ICON)
 
-BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'night_sky.jpg')).convert_alpha()
+BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'night_sky.jpg')).convert_alpha()
+
+SIGNPOST_WIDTH, SIGNPOST_HEIGHT = 600, 120
+SIGNPOST_IMG = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'signpost.png')).convert_alpha()
+SIGNPOST = pygame.transform.scale(SIGNPOST_IMG, (SIGNPOST_WIDTH, SIGNPOST_HEIGHT))
 
 FPS = 144
 TITLE, PAUSED, CONTINUE = -1, 0, 1
 DEDUCT, NONE, GAIN = -1, 0, 1
+SIGN_OPEN, SIGN_OBJ = 0, 1
 
 
 def get_levels():
@@ -133,6 +138,18 @@ def draw_popup(text, player):
                           player.rect.y - player.PLAYER_HEIGHT / 2))
 
 
+def draw_sign(text):
+    text = text.split("\n")
+    exit_text = render_font("Enter >", 10)
+    WIN.blit(SIGNPOST, (20, HEIGHT - SIGNPOST_HEIGHT))
+    last_line = 0
+    for line in text:
+        sign_text = render_font(line, 20)
+        WIN.blit(sign_text, (40, HEIGHT - SIGNPOST_HEIGHT + 20 + last_line))
+        last_line += sign_text.get_height() + 10
+    WIN.blit(exit_text, (SIGNPOST_WIDTH - exit_text.get_width(), HEIGHT - exit_text.get_height() - 10))
+
+
 def draw_title_screen():
     WIN.blit(BACKGROUND, (0, 0))
     start_button = pygame.Rect(WIDTH/2 - 100, HEIGHT/2 + 50, 200, 75)
@@ -177,6 +194,7 @@ def main():
     levels = Maps(levels, player)
 
     hovering = (False, None)
+    sign_status = (False, None)
 
     while running:
 
@@ -240,6 +258,9 @@ def main():
                     if event.key == pygame.K_q:
                         player.remove_from_inventory()
 
+                    if event.key == pygame.K_RETURN and sign_status[SIGN_OPEN]:
+                        sign_status = (False, None)
+
                     if event.key == pygame.K_r:
                         if player.inventory[player.inventory_selected_slot] is not None:
                             selected = player.inventory[player.inventory_selected_slot]
@@ -278,6 +299,10 @@ def main():
                     item = event.item
                     player.add_to_inventory(item)
 
+                if event.type == Sign.READ:
+                    sign = event.sign
+                    sign_status = (True, sign)
+
                 player.process_event(event)
 
         if state == CONTINUE:
@@ -294,6 +319,9 @@ def main():
 
         if gun_empty:
             draw_popup(Gun.RELOAD_TEXT, player)
+
+        if sign_status[SIGN_OPEN]:
+            draw_sign(sign_status[SIGN_OBJ].CONTENTS)
 
         if damage != NONE:
             damage_frames += 1

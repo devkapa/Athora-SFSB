@@ -109,6 +109,23 @@ class ExitDoor(InteractiveType):
         pygame.event.post(self.EVENT)
 
 
+class Sign(InteractiveType):
+
+    POPUP = "'F' to read Sign"
+    READ = pygame.USEREVENT + 7
+    EVENT = pygame.event.Event(READ)
+    TEXTURE = 'signpost.png'
+    CONTENTS: str
+
+    def __init__(self, pos_x, pos_y, contents):
+        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+        self.CONTENTS = contents
+
+    def on_interact(self):
+        self.EVENT.sign = self
+        pygame.event.post(self.EVENT)
+
+
 class DroppedItem(InteractiveType):
 
     GRAVITY = 2

@@ -2,7 +2,7 @@ import pygame
 
 from user.inv_objects import Potion
 from user.player import Player
-from world.map_objects import ObjectType, Floor, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem
+from world.map_objects import ObjectType, Floor, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem, Sign
 from world.npc import RobotEnemy, NPC, Bullet
 
 
@@ -51,6 +51,9 @@ class Map:
                     self.map_objects.append(Dirt(char_index, line_index))
                 if char == "E":
                     self.map_npc.append(RobotEnemy(char_index*32, line_index*32))
+                if char == "!":
+                    self.map_objects.append(Sign(char_index, line_index,
+                                                 "Welcome to Athora!\nPress 'A' and 'D' to move!"))
 
     def draw(self, surface):
         for obj in self.map_objects:
