@@ -17,7 +17,7 @@ class InventoryObject:
     NAME: str
     TEXTURE_FILE: str
     TEXTURE: pygame.Surface
-    TEXTURE_WIDTH, TEXTURE_HEIGHT = 72, 72
+    TEXTURE_WIDTH, TEXTURE_HEIGHT = 80, 80
 
     def __init__(self, name, texture):
         self.NAME = name
@@ -29,7 +29,7 @@ class InventoryObject:
         surface.blit(self.TEXTURE, slot)
         if pygame.player.inventory_selected_slot == index:
             name = render_font(self.NAME, 15)
-            surface.blit(name, (slot[0] + 72 / 2 - name.get_width() / 2, slot[1] - 20))
+            surface.blit(name, (slot[0] + 80 / 2 - name.get_width() / 2, slot[1] - 20))
 
     def use(self):
         pass
@@ -68,8 +68,8 @@ class Gun(InventoryObject):
 
     def draw(self, surface, index, slot):
         super().draw(surface, index, slot)
-        bullets = render_font(str(self.chamber), 10)
-        surface.blit(bullets, (slot[0] + 60 - bullets.get_width(), slot[1] + 60 - bullets.get_height()))
+        bullets = render_font(str(self.chamber), 15)
+        surface.blit(bullets, (slot[0] + 70 - bullets.get_width(), slot[1] + 70 - bullets.get_height()))
         if self.chamber == 0:
             pygame.event.post(self.EMPTY_GUN_EVENT)
 

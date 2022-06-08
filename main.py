@@ -28,6 +28,8 @@ ICON = pygame.image.load(os.path.join('assets', 'textures', 'tiles', 'wall.png')
 pygame.display.set_icon(ICON)
 
 BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'night_sky.jpg')).convert()
+BACKGROUND_SURFACE = pygame.Surface((WIDTH, HEIGHT))
+BACKGROUND_SURFACE.blit(BACKGROUND, (0, 0))
 
 SIGNPOST_WIDTH, SIGNPOST_HEIGHT = 600, 120
 SIGNPOST_IMG = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'signpost.png')).convert()
@@ -63,7 +65,7 @@ def level_sorter(x):
 
 def render_font(text, px):
     font = pygame.font.Font(os.path.join('assets', 'fonts', 'pressstart.ttf'), px)
-    return font.render(text, False, WHITE)
+    return font.render(text, True, WHITE)
 
 
 def create_overlay_surface(colour, alpha=180):
@@ -75,7 +77,7 @@ def create_overlay_surface(colour, alpha=180):
 
 def draw_window(player, level, elapsed_time, state):
     WIN.fill(BLACK)
-    WIN.blit(BACKGROUND, (0, 0))
+    WIN.blit(BACKGROUND_SURFACE, (0, 0))
     level.draw(WIN)
     if player.HEALTH > 0:
         if state == CONTINUE:
@@ -141,9 +143,9 @@ def check_for_interactions(global_map, player):
 
 
 def draw_popup(text, player):
-    popup_text = render_font(text, 10)
+    popup_text = render_font(text, 12)
     WIN.blit(popup_text, (player.rect.x + player.PLAYER_WIDTH / 2 - popup_text.get_width() / 2,
-                          player.rect.y - player.PLAYER_HEIGHT / 2))
+                          player.rect.y - player.PLAYER_HEIGHT / 3))
 
 
 def draw_sign(text):

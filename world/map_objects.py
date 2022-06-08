@@ -137,9 +137,7 @@ class DroppedItem(InteractiveType):
 
     def __init__(self, pos_x, pos_y, inv_obj):
         super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, None, path=os.path.join('assets', 'textures', 'items', inv_obj.TEXTURE_FILE))
-        self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', 'items', inv_obj.TEXTURE_FILE)).convert_alpha()
-        self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (self.OBJECT_WIDTH, self.OBJECT_HEIGHT))
-        self.rect = pygame.Rect(pos_x*self.OBJECT_WIDTH, pos_y*self.OBJECT_HEIGHT, self.OBJECT_WIDTH, self.OBJECT_HEIGHT)
+        self.set_size(40, 40)
         self.INV_OBJECT = inv_obj
         self.POPUP += self.INV_OBJECT.NAME
 
