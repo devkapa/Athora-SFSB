@@ -197,9 +197,19 @@ def main():
     hovering = (False, None)
     sign_status = (False, None)
 
+    fps_avg = 0
+    added = 0
+
     while running:
 
         clock.tick(FPS)
+        fps_avg += int(clock.get_fps())
+        added += 1
+
+        if added == FPS:
+            print("Frames this second:" + str(round(fps_avg/FPS)))
+            added = 0
+            fps_avg = 0
 
         if state == TITLE:
 

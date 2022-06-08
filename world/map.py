@@ -57,9 +57,11 @@ class Map:
 
     def draw(self, surface):
         for obj in self.map_objects:
-            obj.draw(surface)
+            if 0 - obj.OBJECT_WIDTH < obj.rect.x < surface.get_width() and 0 - obj.OBJECT_HEIGHT < obj.rect.y < surface.get_height():
+                obj.draw(surface)
         for npc in self.map_npc:
-            npc.draw(surface)
+            if 0 - npc.NPC_WIDTH < npc.rect.x < surface.get_width() and 0 - npc.NPC_HEIGHT < npc.rect.y < surface.get_height():
+                npc.draw(surface)
 
     def scroll(self, vel_x, vel_y):
         for obj in self.map_objects:
