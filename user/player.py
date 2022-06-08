@@ -2,7 +2,6 @@ import os.path
 
 import pygame.image
 
-from user.inv_objects import Gun
 from world.map_objects import CollideType, DroppedItem
 
 
@@ -13,7 +12,7 @@ class Player:
     DAMAGE = pygame.USEREVENT + 1
     DAMAGE_EVENT = pygame.event.Event(DAMAGE)
 
-    GRAVITY = 4
+    GRAVITY = 6
 
     PLAYER_WIDTH, PLAYER_HEIGHT = 32, 56
     SPAWN_X, SPAWN_Y = 0, 0
@@ -50,11 +49,13 @@ class Player:
     prev_pos_x: int
     prev_pos_y: int
 
-    direction = (False, True, False, False)
+    direction = (True, False, False, False)
     animation_frame_count = 0
 
-    jump_height = 64
     jumping = False
+    jump_height = 12
+    jumps = sorted([-i for i in range(jump_height + 1)])
+    jump_index = 0
 
     INVENTORY_SIZE = 2
     INVENTORY_SLOT_SIZE = INVENTORY_SLOT_WIDTH, INVENTORY_SLOT_HEIGHT = 80, 80
@@ -68,8 +69,8 @@ class Player:
         self.SPAWN_X = spawn_x
         self.SPAWN_Y = spawn_y
         self.rect = pygame.Rect(self.SPAWN_X, self.SPAWN_Y, self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
-        self.current_img = self.PLAYER_LEFT
-        self.inventory = [Gun(), None]
+        self.current_img = self.PLAYER_RIGHT
+        self.inventory = [None, None]
 
     def handle_movement(self, window, keys_pressed, level):
         self.prev_pos_x = self.rect.x
@@ -77,31 +78,29 @@ class Player:
         x_change = 0
         y_change = 0
         if not self.jumping:
-            if self.apply_gravity(level):
-                y_change = self.GRAVITY
+            grav_check = self.apply_gravity(level)
+            if grav_check[0]:
+                if grav_check[1]:
+                    y_change = self.GRAVITY
+                if not grav_check[1]:
+                    y_change = 1
                 self.direction = (self.direction[self.RIGHT], self.direction[self.LEFT], False, True)
             else:
                 if keys_pressed[pygame.K_SPACE]:
                     self.jumping = True
         else:
-            if self.jump_height >= -64:
-                curve = (self.jump_height * abs(self.jump_height)) / 512
-                if not self.check_collision(level, (self.rect.x, self.rect.y - curve)):
-                    self.direction = (self.direction[self.RIGHT], self.direction[self.LEFT], True, False)
-                    y_change -= curve
-                    self.jump_height -= 4
-                else:
-                    self.jumping = False
-                    self.jump_height = 64
+            if self.jump_index < len(self.jumps) - 1:
+                y_change = self.jumps[self.jump_index]
+                self.jump_index += 1
             else:
+                self.jump_index = 0
                 self.jumping = False
-                self.jump_height = 64
 
-        if keys_pressed[pygame.K_a]:
+        if keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]:
             if not self.check_collision(level, (self.rect.x - self.VELOCITY, self.rect.y)):
                 self.direction = (False, True, False, False)
                 x_change -= self.VELOCITY
-        if keys_pressed[pygame.K_d]:
+        if keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
             if not self.check_collision(level, (self.rect.x + self.VELOCITY, self.rect.y)):
                 self.direction = (True, False, False, False)
                 x_change += self.VELOCITY
@@ -143,8 +142,10 @@ class Player:
 
     def apply_gravity(self, level):
         if not self.check_collision(level, (self.rect.x, self.rect.y + self.GRAVITY)):
-            return True
-        return False
+            return True, True
+        elif not self.check_collision(level, (self.rect.x, self.rect.y + 1)):
+            return True, False
+        return False, False
 
     def check_collision(self, level, change):
         potential_rect = pygame.Rect(change[0], change[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT)

@@ -27,7 +27,7 @@ pygame.display.set_caption("Athora: SpaceF Strikes Back")
 ICON = pygame.image.load(os.path.join('assets', 'textures', 'tiles', 'wall.png'))
 pygame.display.set_icon(ICON)
 
-BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'night_sky.jpg')).convert()
+BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'night_sky.png')).convert()
 BACKGROUND_SURFACE = pygame.Surface((WIDTH, HEIGHT))
 BACKGROUND_SURFACE.blit(BACKGROUND, (0, 0))
 
@@ -44,7 +44,7 @@ SIGN_OPEN, SIGN_OBJ = 0, 1
 from user.inv_objects import Gun, Potion
 from user.player import Player
 from world.map import Map, Maps
-from world.map_objects import InteractiveType, ExitDoor, CollideType, DroppedItem, Sign
+from world.map_objects import InteractiveType, ExitDoor, CollideType, DroppedItem, Sign, Lava
 from world.npc import RobotEnemy, NPC
 
 
@@ -166,14 +166,8 @@ def draw_title_screen():
     quit_button = pygame.Rect(WIDTH / 2 - 100, HEIGHT / 2 + 150, 200, 75)
     logo = render_font("Athora", 60)
     sub_logo = render_font("SpaceF Strikes Back", 15)
-    if start_button.collidepoint(pygame.mouse.get_pos()):
-        start_text = render_font("Play", 35)
-    else:
-        start_text = render_font("Play", 30)
-    if quit_button.collidepoint(pygame.mouse.get_pos()):
-        quit_text = render_font("Quit", 35)
-    else:
-        quit_text = render_font("Quit", 30)
+    start_text = render_font("Play", 35 if start_button.collidepoint(pygame.mouse.get_pos()) else 30)
+    quit_text = render_font("Quit", 35 if quit_button.collidepoint(pygame.mouse.get_pos()) else 30)
     WIN.blit(logo, (WIDTH / 2 - logo.get_width() / 2, HEIGHT / 2 - 150 + logo.get_height() / 2))
     WIN.blit(sub_logo, (WIDTH / 2 - sub_logo.get_width() / 2, HEIGHT / 2 - 50 + sub_logo.get_height() / 2))
     WIN.blit(start_text, (WIDTH / 2 - start_text.get_width() / 2, HEIGHT / 2 + 50 + start_text.get_height() / 2))
@@ -287,12 +281,6 @@ def main():
                     if event.key == pygame.K_f and hovering[0]:
                         hovering[1].on_interact()
 
-                if event.type == player.DAMAGE:
-                    if event.hp > 0:
-                        damage = GAIN
-                    if event.hp < 0:
-                        damage = DEDUCT
-
                 if event.type == ExitDoor.ENTER:
                     levels + 1
 
@@ -312,6 +300,15 @@ def main():
                 if event.type == Sign.READ:
                     sign = event.sign
                     sign_status = (True, sign)
+
+                if event.type == Lava.BURN and damage_frames == 0:
+                    player.change_hp(-1)
+
+                if event.type == player.DAMAGE:
+                    if event.hp > 0:
+                        damage = GAIN
+                    if event.hp < 0:
+                        damage = DEDUCT
 
                 player.process_event(event)
 

@@ -1,8 +1,8 @@
 import pygame
 
-from user.inv_objects import Potion
+from user.inv_objects import Potion, Gun
 from user.player import Player
-from world.map_objects import ObjectType, Floor, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem, Sign
+from world.map_objects import ObjectType, Floor, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem, Sign, Lava
 from world.npc import RobotEnemy, NPC, Bullet
 
 
@@ -41,19 +41,40 @@ class Map:
                     self.map_objects.append(spawn)
                 if char == "T":
                     self.map_objects.append(ExitDoor(char_index, line_index))
+                if char == "H":
+                    self.map_objects.append(DroppedItem(char_index, line_index, Potion(10)))
                 if char == "P":
-                    self.map_objects.append(DroppedItem(char_index, line_index, Potion(2)))
+                    self.map_objects.append(DroppedItem(char_index, line_index, Gun()))
                 if char == "B":
                     self.map_objects.append(Barrier(char_index, line_index))
                 if char == "G":
                     self.map_objects.append(Grass(char_index, line_index))
                 if char == "D":
                     self.map_objects.append(Dirt(char_index, line_index))
+                if char == "L":
+                    self.map_objects.append(Lava(char_index, line_index))
                 if char == "E":
                     self.map_npc.append(RobotEnemy(char_index*32, line_index*32))
+                if char == "R":
+                    self.map_npc.append(RobotEnemy(char_index*32, line_index*32, health=3))
                 if char == "!":
                     self.map_objects.append(Sign(char_index, line_index,
-                                                 "Welcome to Athora!\nPress 'A' and 'D' to move!"))
+                                                 "Welcome to Athora!\nPress 'A' & 'D' or '←' & '→'\nto move!"))
+                if char == "@":
+                    self.map_objects.append(Sign(char_index, line_index,
+                                                 "Excellent work! Try jumping\nover this wall by pressing\n'SPACE'!"))
+                if char == "#":
+                    self.map_objects.append(Sign(char_index, line_index,
+                                                 "Nice! Here, take this gun.\nTry shooting this robot\nby pressing 'M'!"))
+                if char == "$":
+                    self.map_objects.append(Sign(char_index, line_index,
+                                                 "Whew, that was close! This\npotion will heal you up.\nPress 'M' to use."))
+                if char == "%":
+                    self.map_objects.append(Sign(char_index, line_index,
+                                                 "Use '1' and '2' to switch\nbetween your inventory\nslots!"))
+                if char == "^":
+                    self.map_objects.append(Sign(char_index, line_index,
+                                                 "Good job finishing the\ntutorial. Enter this portal\nto begin your journey!"))
 
     def draw(self, surface):
         for obj in self.map_objects:

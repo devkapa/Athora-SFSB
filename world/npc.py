@@ -113,7 +113,6 @@ class NPC:
 class RobotEnemy(NPC):
 
     texture = 'robot-preview.png'
-    health = 10
 
     alerted = False
     alerted_time = 0
@@ -124,8 +123,8 @@ class RobotEnemy(NPC):
 
     last_bullet = -1
 
-    def __init__(self, pos_x, pos_y):
-        super().__init__(pos_x, pos_y, self.health, self.texture)
+    def __init__(self, pos_x, pos_y, health=10):
+        super().__init__(pos_x, pos_y, health, self.texture)
         self.viewing_radius = pygame.Rect(self.rect.x - (self.RADIUS_WIDTH / 2 + self.NPC_WIDTH / 2),
                                           self.rect.y - (self.RADIUS_HEIGHT / 2 + self.NPC_HEIGHT / 2),
                                           self.RADIUS_WIDTH, self.RADIUS_HEIGHT)

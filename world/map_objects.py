@@ -126,6 +126,25 @@ class Sign(InteractiveType):
         pygame.event.post(self.EVENT)
 
 
+class Lava(InteractiveType):
+
+    POPUP = "Ow!"
+    BURN = pygame.USEREVENT + 8
+    EVENT = pygame.event.Event(BURN)
+    TEXTURE = 'lava.png'
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+
+    def draw(self, surface):
+        super().draw(surface)
+        if pygame.player.rect.colliderect(self.rect):
+            self.on_interact()
+
+    def on_interact(self):
+        pygame.event.post(self.EVENT)
+
+
 class DroppedItem(InteractiveType):
 
     GRAVITY = 2
