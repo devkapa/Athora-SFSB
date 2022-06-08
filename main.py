@@ -29,7 +29,7 @@ pygame.display.set_icon(ICON)
 BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'night_sky.jpg')).convert_alpha()
 
 FPS = 144
-PAUSED, CONTINUE = 0, 1
+TITLE, PAUSED, CONTINUE = -1, 0, 1
 DEDUCT, NONE, GAIN = -1, 0, 1
 
 
@@ -133,13 +133,24 @@ def draw_popup(text, player):
                           player.rect.y - player.PLAYER_HEIGHT / 2))
 
 
+def draw_title_screen():
+    WIN.blit(BACKGROUND, (0, 0))
+    start_button = pygame.Rect(WIDTH/2 - 100, HEIGHT/2 + 50, 200, 75)
+    quit_button = pygame.Rect(WIDTH/2 - 100, HEIGHT/2 + 150, 200, 75)
+    start_text = render_font("Play", 30)
+    quit_text = render_font("Quit", 30)
+    WIN.blit(start_text, (WIDTH/2 - start_text.get_width()/2, HEIGHT/2 + 50 + start_text.get_height()/2))
+    WIN.blit(quit_text, (WIDTH/2 - quit_text.get_width()/2, HEIGHT/2 + 150 + quit_text.get_height()/2))
+    return start_button, quit_button
+
+
 def main():
     clock = pygame.time.Clock()
     running = True
 
     elapsed_time = 0
 
-    state = CONTINUE
+    state = TITLE
 
     player = Player()
     pygame.player = player
@@ -160,6 +171,30 @@ def main():
     while running:
 
         clock.tick(FPS)
+
+        if state == TITLE:
+
+            start_button, quit_button = draw_title_screen()
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    pygame.quit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    if quit_button.collidepoint(event.pos):
+                        running = False
+                        pygame.quit()
+
+                    if start_button.collidepoint(event.pos):
+                        state = CONTINUE
+
+            pygame.display.update()
+
+            continue
+
         current_level = levels.current
         pygame.level = current_level
 
