@@ -137,8 +137,18 @@ def draw_title_screen():
     WIN.blit(BACKGROUND, (0, 0))
     start_button = pygame.Rect(WIDTH/2 - 100, HEIGHT/2 + 50, 200, 75)
     quit_button = pygame.Rect(WIDTH/2 - 100, HEIGHT/2 + 150, 200, 75)
-    start_text = render_font("Play", 30)
-    quit_text = render_font("Quit", 30)
+    logo = render_font("Athora", 60)
+    sub_logo = render_font("SpaceF Strikes Back", 15)
+    if start_button.collidepoint(pygame.mouse.get_pos()):
+        start_text = render_font("Play", 35)
+    else:
+        start_text = render_font("Play", 30)
+    if quit_button.collidepoint(pygame.mouse.get_pos()):
+        quit_text = render_font("Quit", 35)
+    else:
+        quit_text = render_font("Quit", 30)
+    WIN.blit(logo, (WIDTH/2 - logo.get_width()/2, HEIGHT/2 - 150 + logo.get_height()/2))
+    WIN.blit(sub_logo, (WIDTH/2 - sub_logo.get_width()/2, HEIGHT/2 - 50 + sub_logo.get_height()/2))
     WIN.blit(start_text, (WIDTH/2 - start_text.get_width()/2, HEIGHT/2 + 50 + start_text.get_height()/2))
     WIN.blit(quit_text, (WIDTH/2 - quit_text.get_width()/2, HEIGHT/2 + 150 + quit_text.get_height()/2))
     return start_button, quit_button
