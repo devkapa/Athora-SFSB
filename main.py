@@ -1,5 +1,6 @@
 import datetime
 import os.path
+import sys
 
 import pygame
 
@@ -176,6 +177,7 @@ def draw_title_screen():
 
 
 def main():
+
     clock = pygame.time.Clock()
     running = True
 
@@ -211,14 +213,14 @@ def main():
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
-                    running = False
                     pygame.quit()
+                    sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     if quit_button.collidepoint(event.pos):
-                        running = False
                         pygame.quit()
+                        sys.exit()
 
                     if start_button.collidepoint(event.pos):
                         state = CONTINUE
@@ -233,8 +235,8 @@ def main():
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
-                running = False
                 pygame.quit()
+                sys.exit()
 
             if state == PAUSED:
 
