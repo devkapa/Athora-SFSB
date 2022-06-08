@@ -18,6 +18,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 GRAY = (168, 168, 168)
 BLACK = (0, 0, 0)
+POTION = (157, 161, 228)
 
 WIDTH, HEIGHT = 832, 640
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -30,7 +31,7 @@ BACKGROUND = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'ni
 
 SIGNPOST_WIDTH, SIGNPOST_HEIGHT = 600, 120
 SIGNPOST_IMG = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'signpost.png')).convert_alpha()
-SIGNPOST = pygame.transform.scale(SIGNPOST_IMG, (SIGNPOST_WIDTH, SIGNPOST_HEIGHT))
+SIGNPOST = pygame.transform.scale(SIGNPOST_IMG, (SIGNPOST_WIDTH, SIGNPOST_HEIGHT)).convert_alpha()
 
 FPS = 144
 TITLE, PAUSED, CONTINUE = -1, 0, 1
@@ -118,7 +119,7 @@ def draw_overlay(colour, title, subheading):
 
 def draw_damage(damage, damage_frames):
     if damage > NONE:
-        WIN.blit(create_overlay_surface(GREEN, alpha=180 - (damage_frames * 6)), (0, 0))
+        WIN.blit(create_overlay_surface(POTION, alpha=180 - (damage_frames * 6)), (0, 0))
     if damage < NONE:
         WIN.blit(create_overlay_surface(RED, alpha=180 - (damage_frames * 6)), (0, 0))
 
