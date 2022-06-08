@@ -33,7 +33,7 @@ SIGNPOST_WIDTH, SIGNPOST_HEIGHT = 600, 120
 SIGNPOST_IMG = pygame.image.load(os.path.join('assets', 'textures', 'overlay', 'signpost.png')).convert()
 SIGNPOST = pygame.transform.scale(SIGNPOST_IMG, (SIGNPOST_WIDTH, SIGNPOST_HEIGHT))
 
-FPS = 144
+FPS = 60
 TITLE, PAUSED, CONTINUE = -1, 0, 1
 DEDUCT, NONE, GAIN = -1, 0, 1
 SIGN_OPEN, SIGN_OBJ = 0, 1
@@ -98,9 +98,9 @@ def draw_bullets(player, level):
             if npc.HEALTH <= 0:
                 level.map_npc.remove(npc)
         if bullet.facing == bullet.LEFT:
-            bullet.rect.x -= 2
+            bullet.rect.x -= bullet.SPEED
         if bullet.facing == bullet.RIGHT:
-            bullet.rect.x += 2
+            bullet.rect.x += bullet.SPEED
         if bullet.rect.x < 0 or bullet.rect.x > WIDTH:
             level.map_bullets.remove(bullet)
         elif bullet.rect.colliderect(player.rect) and isinstance(bullet.origin(), NPC):

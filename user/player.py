@@ -7,13 +7,13 @@ from world.map_objects import CollideType, DroppedItem
 
 
 class Player:
-    VELOCITY = 1
+    VELOCITY = 2
 
     HEALTH = 10
     DAMAGE = pygame.USEREVENT + 1
     DAMAGE_EVENT = pygame.event.Event(DAMAGE)
 
-    GRAVITY = 2
+    GRAVITY = 4
 
     PLAYER_WIDTH, PLAYER_HEIGHT = 32, 56
     SPAWN_X, SPAWN_Y = 0, 0
@@ -42,7 +42,7 @@ class Player:
     EMPTY_HEART = pygame.transform.scale(EMPTY_HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
 
     RIGHT, LEFT, UP, DOWN = 0, 1, 2, 3
-    ANIMATION_SPEED = 30
+    ANIMATION_SPEED = 15
 
     rect: pygame.Rect
     current_img: pygame.Surface
@@ -85,11 +85,11 @@ class Player:
                     self.jumping = True
         else:
             if self.jump_height >= -64:
-                curve = (self.jump_height * abs(self.jump_height)) / 1024
+                curve = (self.jump_height * abs(self.jump_height)) / 512
                 if not self.check_collision(level, (self.rect.x, self.rect.y - curve)):
                     self.direction = (self.direction[self.RIGHT], self.direction[self.LEFT], True, False)
                     y_change -= curve
-                    self.jump_height -= 2
+                    self.jump_height -= 4
                 else:
                     self.jumping = False
                     self.jump_height = 64
@@ -108,11 +108,11 @@ class Player:
 
         if x_change != 0:
             if self.rect.x + x_change > window.get_width() * 0.75 and self.direction[self.RIGHT]:
-                level.scroll(-1, 0)
+                level.scroll(-self.VELOCITY, 0)
                 x_change = 0
                 self.prev_pos_x -= 1
             if self.rect.x + x_change < window.get_width() * 0.25 and self.direction[self.LEFT]:
-                level.scroll(1, 0)
+                level.scroll(self.VELOCITY, 0)
                 x_change = 0
                 self.prev_pos_x += 1
         if y_change != 0:

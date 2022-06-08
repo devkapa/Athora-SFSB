@@ -11,6 +11,8 @@ class Bullet:
     BULLET_TEXTURE = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'bullet.png')).convert_alpha()
     RIGHT, LEFT = 0, 1
 
+    SPEED = 4
+
     ORIGIN = None
 
     rect: pygame.Rect
