@@ -120,3 +120,8 @@ class Maps:
     def spawn_player(self):
         self.player.rect.x = self.current.spawn_point.rect.x
         self.player.rect.y = self.current.spawn_point.rect.y - self.player.PLAYER_WIDTH / 2
+
+    def next(self):
+        if 0 < self.maps.index(self.current) + 1 < len(self.maps):
+            return self.maps[self.maps.index(self.current) + 1]
+        return None

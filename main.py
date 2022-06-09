@@ -69,6 +69,13 @@ def render_font(text, px):
     return font.render(text, True, WHITE)
 
 
+def render_alpha_font(text, px, alpha):
+    font = pygame.font.Font(os.path.join('assets', 'fonts', 'pressstart.ttf'), px)
+    text = font.render(text, True, WHITE)
+    text.set_alpha(alpha)
+    return text
+
+
 def create_overlay_surface(colour, alpha=180):
     surface = pygame.Surface((WIDTH, HEIGHT))
     surface.set_alpha(alpha)
@@ -134,6 +141,10 @@ def draw_damage(damage, damage_frames):
         WIN.blit(create_overlay_surface(RED, alpha=180 - (damage_frames * 6)), (0, 0))
 
 
+def draw_transition(transition_frames):
+    WIN.blit(create_overlay_surface(BLACK, alpha=0 + transition_frames), (0, 0))
+
+
 def check_for_interactions(global_map, player):
     for map_object in global_map.map_objects:
         if isinstance(map_object, InteractiveType):
@@ -193,6 +204,7 @@ def main():
     damage_frames = 0
 
     levels = []
+    next_level_title = ""
 
     for index, level in enumerate(get_levels()):
         levels.append(Map(f'Level {index + 1}', level))
@@ -202,9 +214,14 @@ def main():
     hovering = (False, None)
     sign_status = (False, None)
 
+    changing_levels = False
+    transition_frames = 0
+    text_frames = 0
+
     while running:
 
         clock.tick(FPS)
+        next_level = levels.next()
 
         if state == TITLE:
 
@@ -284,7 +301,7 @@ def main():
                         hovering[1].on_interact()
 
                 if event.type == ExitDoor.ENTER:
-                    levels + 1
+                    changing_levels = True
 
                 if event.type == Gun.EMPTY_GUN:
                     gun_empty = True
@@ -332,6 +349,13 @@ def main():
         if sign_status[SIGN_OPEN]:
             draw_sign(sign_status[SIGN_OBJ].CONTENTS)
 
+        interactions = check_for_interactions(current_level, player)
+
+        if interactions[0]:
+            hovering = (True, interactions[1])
+        else:
+            hovering = (False, None)
+
         if damage != NONE:
             damage_frames += 1
 
@@ -342,12 +366,30 @@ def main():
         if damage_frames > 0:
             draw_damage(damage, damage_frames)
 
-        interactions = check_for_interactions(current_level, player)
+        if state == CONTINUE:
 
-        if interactions[0]:
-            hovering = (True, interactions[1])
-        else:
-            hovering = (False, None)
+            if changing_levels:
+                if transition_frames == 0:
+                    next_level_title = next_level.title
+                transition_frames += 2
+
+            if not changing_levels:
+                if transition_frames != 0:
+                    transition_frames -= 2
+                if text_frames != 0:
+                    text_frames -= 4
+
+            if transition_frames == 380:
+                changing_levels = False
+                levels + 1
+
+            if transition_frames > 0:
+                draw_transition(transition_frames)
+                if transition_frames > 250:
+                    text_frames += 4
+
+            text = render_alpha_font(next_level_title, 30, text_frames)
+            WIN.blit(text, (WIDTH/2 - text.get_width() / 2, HEIGHT/2 - text.get_height()/2))
 
         if state == PAUSED and player.HEALTH > 0:
             draw_overlay(GRAY, "Game Paused", "Press P to unpause")

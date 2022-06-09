@@ -12,7 +12,7 @@ class Player:
     DAMAGE = pygame.USEREVENT + 1
     DAMAGE_EVENT = pygame.event.Event(DAMAGE)
 
-    GRAVITY = 6
+    GRAVITY = 8
 
     PLAYER_WIDTH, PLAYER_HEIGHT = 32, 56
     SPAWN_X, SPAWN_Y = 0, 0
