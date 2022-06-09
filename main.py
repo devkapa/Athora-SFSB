@@ -65,15 +65,10 @@ def level_sorter(x):
     return os.path.split(x)[-1]
 
 
-def render_font(text, px):
+def render_font(text, px, color=WHITE, alpha=None):
     font = pygame.font.Font(os.path.join('assets', 'fonts', 'pressstart.ttf'), px)
-    return font.render(text, True, WHITE)
-
-
-def render_alpha_font(text, px, alpha):
-    font = pygame.font.Font(os.path.join('assets', 'fonts', 'pressstart.ttf'), px)
-    text = font.render(text, True, WHITE)
-    text.set_alpha(alpha)
+    text = font.render(text, True, color)
+    text.set_alpha(alpha) if alpha is not None else None
     return text
 
 
@@ -302,8 +297,12 @@ def main():
                         hovering[INTERACTING_WITH].on_interact()
 
                 if event.type == ExitDoor.ENTER:
-                    changing_levels = True
-                    state = TRANSITION
+                    if levels.next() is not None:
+                        changing_levels = True
+                        state = TRANSITION
+                    else:
+                        sign = Sign(0, 0, "This portal doesn't lead\nanywhere.")
+                        sign_status = (True, sign)
 
                 if event.type == Gun.EMPTY_GUN:
                     gun_empty = True
@@ -348,15 +347,15 @@ def main():
         if gun_empty:
             draw_popup(Gun.RELOAD_TEXT, player)
 
-        if sign_status[SIGN_OPEN]:
-            draw_sign(sign_status[SIGN_OBJ].CONTENTS)
-
         interactions = check_for_interactions(current_level, player)
 
         if interactions[IS_INTERACTING]:
             hovering = (True, interactions[INTERACTING_WITH])
         else:
             hovering = (False, None)
+
+        if sign_status[SIGN_OPEN]:
+            draw_sign(sign_status[SIGN_OBJ].CONTENTS)
 
         if damage != NONE:
             damage_frames += 1
@@ -392,7 +391,7 @@ def main():
                 if transition_frames > 250:
                     text_frames += 4
 
-            text = render_alpha_font(next_level_title, 30, text_frames)
+            text = render_font(next_level_title, 30, alpha=text_frames)
             WIN.blit(text, (WIDTH/2 - text.get_width() / 2, HEIGHT/2 - text.get_height()/2))
 
         if state == PAUSED and player.HEALTH > 0:
