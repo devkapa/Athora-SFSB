@@ -37,9 +37,10 @@ SIGNPOST_IMG = pygame.image.load(os.path.join('assets', 'textures', 'overlay', '
 SIGNPOST = pygame.transform.scale(SIGNPOST_IMG, (SIGNPOST_WIDTH, SIGNPOST_HEIGHT))
 
 FPS = 60
-TITLE, PAUSED, CONTINUE = -1, 0, 1
+TITLE, PAUSED, CONTINUE, TRANSITION = -1, 0, 1, 2
 DEDUCT, NONE, GAIN = -1, 0, 1
 SIGN_OPEN, SIGN_OBJ = 0, 1
+IS_INTERACTING, INTERACTING_WITH = 0, 1
 
 
 from user.inv_objects import Gun, Potion
@@ -211,8 +212,8 @@ def main():
 
     levels = Maps(levels, player)
 
-    hovering = (False, None)
-    sign_status = (False, None)
+    hovering: (bool, InteractiveType) = (False, None)
+    sign_status: (bool, Sign) = (False, None)
 
     changing_levels = False
     transition_frames = 0
@@ -297,11 +298,12 @@ def main():
                     if event.key == pygame.K_2:
                         player.inventory_selected_slot = 0
 
-                    if event.key == pygame.K_f and hovering[0]:
-                        hovering[1].on_interact()
+                    if event.key == pygame.K_f and hovering[IS_INTERACTING]:
+                        hovering[INTERACTING_WITH].on_interact()
 
                 if event.type == ExitDoor.ENTER:
                     changing_levels = True
+                    state = TRANSITION
 
                 if event.type == Gun.EMPTY_GUN:
                     gun_empty = True
@@ -351,8 +353,8 @@ def main():
 
         interactions = check_for_interactions(current_level, player)
 
-        if interactions[0]:
-            hovering = (True, interactions[1])
+        if interactions[IS_INTERACTING]:
+            hovering = (True, interactions[INTERACTING_WITH])
         else:
             hovering = (False, None)
 
@@ -366,7 +368,7 @@ def main():
         if damage_frames > 0:
             draw_damage(damage, damage_frames)
 
-        if state == CONTINUE:
+        if state == TRANSITION:
 
             if changing_levels:
                 if transition_frames == 0:
@@ -378,6 +380,8 @@ def main():
                     transition_frames -= 2
                 if text_frames != 0:
                     text_frames -= 4
+                if transition_frames == 0 and text_frames == 0:
+                    state = CONTINUE
 
             if transition_frames == 380:
                 changing_levels = False
