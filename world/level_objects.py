@@ -3,6 +3,7 @@ import os.path
 import pygame
 
 
+# A structure for a 32x32 object that will appear on the level
 class ObjectType:
 
     # Dimensions of the object
