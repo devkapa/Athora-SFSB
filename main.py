@@ -306,8 +306,9 @@ def main():
                         ExitDoor.PORTAL_SOUND.play()
                         state = TRANSITION
                     else:
-                        sign = Sign(0, 0, "This portal doesn't lead\nanywhere.")
-                        sign_status = (True, sign)
+                        if sign_status[SIGN_OBJ] != ExitDoor.NO_LEVEL:
+                            ExitDoor.NO_LEVEL.READ_SOUND.play()
+                            sign_status = (True, ExitDoor.NO_LEVEL)
 
                 if event.type == Gun.EMPTY_GUN:
                     gun_empty = True
