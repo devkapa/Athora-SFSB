@@ -101,14 +101,13 @@ class ExitDoor(InteractiveType):
     EVENT = pygame.event.Event(ENTER)
     TEXTURE = 'trapdoor.png'
 
-    PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'portal.wav'))
+    PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'portal.wav'))
 
     def __init__(self, pos_x, pos_y):
         super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
         self.set_size(self.OBJECT_WIDTH, 64)
 
     def on_interact(self):
-        self.PORTAL_SOUND.play()
         pygame.event.post(self.EVENT)
 
 
@@ -119,6 +118,8 @@ class Sign(InteractiveType):
     EVENT = pygame.event.Event(READ)
     TEXTURE = 'signpost.png'
     CONTENTS: str
+
+    READ_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'pop.ogg'))
 
     def __init__(self, pos_x, pos_y, contents):
         super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)

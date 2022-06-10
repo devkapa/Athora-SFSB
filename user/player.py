@@ -33,9 +33,9 @@ class Player:
     PLAYER_LEFT_WALKING = [PLAYER_LEFT_WALK_1, PLAYER_LEFT, PLAYER_LEFT_WALK_2, PLAYER_LEFT]
     PLAYER_RIGHT_WALKING = [PLAYER_RIGHT_WALK_1, PLAYER_RIGHT, PLAYER_RIGHT_WALK_2, PLAYER_RIGHT]
 
-    JUMP_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'jump.wav'))
-    COLLECT_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'collect.wav'))
-    DEATH_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'death.flac'))
+    JUMP_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'player', 'jump.wav'))
+    COLLECT_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'player', 'collect.wav'))
+    DEATH_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'player', 'death.flac'))
 
     HEART_WIDTH, HEART_HEIGHT = 36, 36
 
@@ -85,7 +85,7 @@ class Player:
 
     def init_damage_sounds(self):
         self.DAMAGE_NOISES = []
-        sound_dir = os.path.join('assets', 'sounds', 'damage')
+        sound_dir = os.path.join('assets', 'sounds', 'player', 'damage')
         sound_files = [f for f in os.listdir(sound_dir)
                        if os.path.isfile(os.path.join(sound_dir, f)) and f.lower().endswith(".flac")]
         for sound in sound_files:
