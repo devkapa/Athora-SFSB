@@ -101,11 +101,14 @@ class ExitDoor(InteractiveType):
     EVENT = pygame.event.Event(ENTER)
     TEXTURE = 'trapdoor.png'
 
+    PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'portal.wav'))
+
     def __init__(self, pos_x, pos_y):
         super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
         self.set_size(self.OBJECT_WIDTH, 64)
 
     def on_interact(self):
+        self.PORTAL_SOUND.play()
         pygame.event.post(self.EVENT)
 
 

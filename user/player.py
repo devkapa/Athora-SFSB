@@ -1,4 +1,5 @@
 import os.path
+import random
 
 import pygame.image
 
@@ -34,6 +35,7 @@ class Player:
 
     JUMP_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'jump.wav'))
     COLLECT_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'collect.wav'))
+    DEATH_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'death.flac'))
 
     HEART_WIDTH, HEART_HEIGHT = 36, 36
 
@@ -42,6 +44,9 @@ class Player:
 
     FULL_HEART = pygame.transform.scale(FULL_HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
     EMPTY_HEART = pygame.transform.scale(EMPTY_HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
+
+    DAMAGE_NOISES: list
+    DAMAGE_CHANNEL = pygame.mixer.Channel(5)
 
     RIGHT, LEFT, UP, DOWN = 0, 1, 2, 3
     ANIMATION_SPEED = 15
@@ -68,12 +73,26 @@ class Player:
     inventory: list
     inventory_selected_slot = 0
 
+    last_tick = 0
+
     def __init__(self, spawn_x=0, spawn_y=0):
         self.SPAWN_X = spawn_x
         self.SPAWN_Y = spawn_y
         self.rect = pygame.Rect(self.SPAWN_X, self.SPAWN_Y, self.PLAYER_WIDTH, self.PLAYER_HEIGHT)
         self.current_img = self.PLAYER_RIGHT
         self.inventory = [None, None]
+        self.init_damage_sounds()
+
+    def init_damage_sounds(self):
+        self.DAMAGE_NOISES = []
+        sound_dir = os.path.join('assets', 'sounds', 'damage')
+        sound_files = [f for f in os.listdir(sound_dir)
+                       if os.path.isfile(os.path.join(sound_dir, f)) and f.lower().endswith(".flac")]
+        for sound in sound_files:
+            self.DAMAGE_NOISES.append(pygame.mixer.Sound(os.path.join(sound_dir, sound)))
+
+    def play_damage_sound(self):
+        return random.choice(self.DAMAGE_NOISES)
 
     def handle_movement(self, window, keys_pressed, level):
         self.prev_pos_x = self.rect.x

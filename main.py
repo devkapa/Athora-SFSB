@@ -43,6 +43,9 @@ DEDUCT, NONE, GAIN = -1, 0, 1
 SIGN_OPEN, SIGN_OBJ = 0, 1
 IS_INTERACTING, INTERACTING_WITH = 0, 1
 
+AMBIENCE_CHANNEL = pygame.mixer.Channel(6)
+AMBIENCE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'ambience.wav'))
+
 
 from user.inv_objects import Gun, Potion
 from user.player import Player
@@ -329,6 +332,8 @@ def main():
                     if event.hp > 0:
                         damage = GAIN
                     if event.hp < 0:
+                        if not player.DAMAGE_CHANNEL.get_busy() and player.HEALTH + event.hp > 0:
+                            player.DAMAGE_CHANNEL.play(player.play_damage_sound())
                         damage = DEDUCT
 
                 player.process_event(event)
@@ -337,6 +342,12 @@ def main():
             keys_pressed = pygame.key.get_pressed()
             player.handle_movement(WIN, keys_pressed, current_level)
             elapsed_time += 1 / FPS
+            if not AMBIENCE_CHANNEL.get_busy():
+                AMBIENCE_CHANNEL.play(AMBIENCE)
+
+        if state != CONTINUE:
+            if AMBIENCE_CHANNEL.get_busy():
+                AMBIENCE_CHANNEL.stop()
 
         draw_window(player, current_level, elapsed_time, state)
 
@@ -400,6 +411,8 @@ def main():
 
         if player.HEALTH <= 0:
             draw_overlay(RED, "You died!", "Press R to restart")
+            if state == CONTINUE:
+                player.DEATH_NOISE.play()
             state = PAUSED
 
         pygame.display.update()

@@ -137,7 +137,7 @@ class RobotEnemy(NPC):
         super().update(window)
         self.viewing_radius.x = self.rect.x - self.RADIUS_WIDTH / 2 + self.NPC_WIDTH / 2
         self.viewing_radius.y = self.rect.y - self.RADIUS_HEIGHT / 2 + self.NPC_HEIGHT / 2
-        if pygame.player.rect.colliderect(self.viewing_radius):
+        if pygame.player.rect.colliderect(self.viewing_radius) and pygame.player.HEALTH > 0:
             if not self.alerted:
                 self.alerted = True
                 self.ALERTED_SOUND.play()
