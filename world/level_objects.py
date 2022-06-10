@@ -5,26 +5,33 @@ import pygame
 
 class ObjectType:
 
+    # Dimensions of the object
     OBJECT_WIDTH, OBJECT_HEIGHT = 32, 32
 
+    # Texture to be displayed
     TEXTURE: pygame.Surface
 
+    # Rectangle around the object
     rect: pygame.Rect
 
+    # Initialise the texture for the object and resize it
     def __init__(self, pos_x, pos_y, texture, path=None):
         self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'textures', 'tiles', texture) if path is None else path).convert_alpha()
         self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (self.OBJECT_WIDTH, self.OBJECT_HEIGHT))
         self.rect = pygame.Rect(pos_x*self.OBJECT_WIDTH, pos_y*self.OBJECT_HEIGHT, self.OBJECT_WIDTH, self.OBJECT_HEIGHT)
 
+    # Draw the object at it's position in the level
     def draw(self, surface):
         surface.blit(self.TEXTURE, (self.rect.x, self.rect.y))
 
+    # Function used to resize some textures if they are not 32x32
     def set_size(self, x, y):
         self.TEXTURE = pygame.transform.scale(self.TEXTURE_IMG, (x, y))
         self.rect.width = x
         self.rect.height = y
 
 
+# The following classes are common ObjectTypes with predefined textures
 class Background(ObjectType):
 
     texture = 'floor.png'
@@ -41,6 +48,8 @@ class Air(ObjectType):
         super().__init__(pos_x, pos_y, self.texture)
 
 
+# An extension of the ObjectType class that the player cannot walk past
+# Structurally, it is the same as an ObjectType
 class CollideType(ObjectType):
 
     def __init__(self, pos_x, pos_y, texture):
@@ -79,9 +88,13 @@ class Barrier(CollideType):
         super().__init__(pos_x, pos_y, self.texture)
 
 
+# An extension of the ObjectType that, when collided with, allows for players to interact with
 class InteractiveType(ObjectType):
 
     TEXTURE: pygame.Surface
+
+    # InteractiveTypes have an Event that is posted when interacted with
+    # They also have a text POPUP that is shown when the player collides with it
     EVENT: pygame.event.Event
     POPUP: str
 
@@ -91,7 +104,7 @@ class InteractiveType(ObjectType):
         self.POPUP = popup
 
     def on_interact(self):
-        pass
+        pygame.event.post(self.EVENT)
 
 
 class Sign(InteractiveType):
@@ -110,7 +123,7 @@ class Sign(InteractiveType):
 
     def on_interact(self):
         self.EVENT.sign = self
-        pygame.event.post(self.EVENT)
+        super().on_interact()
 
 
 class ExitDoor(InteractiveType):
@@ -126,9 +139,6 @@ class ExitDoor(InteractiveType):
     def __init__(self, pos_x, pos_y):
         super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
         self.set_size(self.OBJECT_WIDTH, 64)
-
-    def on_interact(self):
-        pygame.event.post(self.EVENT)
 
 
 class Lava(InteractiveType):
@@ -146,10 +156,9 @@ class Lava(InteractiveType):
         if pygame.player.rect.colliderect(self.rect):
             self.on_interact()
 
-    def on_interact(self):
-        pygame.event.post(self.EVENT)
 
-
+# An extension of the InteractiveType which represents an item that can be picked up
+# These items are affected by gravity and 'stores' the InventoryItem equivalent within its structure
 class DroppedItem(InteractiveType):
 
     GRAVITY = 2
@@ -167,19 +176,15 @@ class DroppedItem(InteractiveType):
 
     def on_interact(self):
         self.EVENT.item = self
-        pygame.event.post(self.EVENT)
+        super().on_interact()
 
     def draw(self, surface):
         self.handle_movement(pygame.level)
         super().draw(surface)
 
     def handle_movement(self, level):
-        x_change = 0
-        y_change = 0
         if self.apply_gravity(level):
-            y_change = self.GRAVITY
-        self.rect.x += x_change
-        self.rect.y += y_change
+            self.rect.y += self.GRAVITY
 
     def apply_gravity(self, level):
         if not self.check_collision(level, (self.rect.x, self.rect.y + self.GRAVITY)):
@@ -188,9 +193,9 @@ class DroppedItem(InteractiveType):
 
     def check_collision(self, level, change):
         potential_rect = pygame.Rect(change[0], change[1], self.OBJECT_WIDTH, self.OBJECT_HEIGHT)
-        for map_object in level.map_objects:
-            if isinstance(map_object, CollideType):
-                if map_object.rect.colliderect(potential_rect):
+        for level_object in level.level_objects:
+            if isinstance(level_object, CollideType):
+                if level_object.rect.colliderect(potential_rect):
                     return True
         return False
 

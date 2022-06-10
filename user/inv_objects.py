@@ -89,7 +89,7 @@ class Gun(InventoryObject):
         if pygame.player.direction[pygame.player.RIGHT]:
             x = pygame.player.rect.x + pygame.player.rect.w
             direction = pygame.player.RIGHT
-        pygame.level.map_bullets.append(Bullet(x, y, direction, pygame.player))
+        pygame.level.level_bullets.append(Bullet(x, y, direction, pygame.player))
         self.chamber -= 1
 
     def reload(self):

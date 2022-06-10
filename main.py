@@ -61,19 +61,19 @@ AMBIENCE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'misc', 'ambience
 # Import modules intentionally after pygame is initialised to allow for image conversion
 from user.inv_objects import Gun, Potion
 from user.player import Player
-from world.map import Map, Maps
-from world.map_objects import InteractiveType, ExitDoor, CollideType, DroppedItem, Sign, Lava
+from world.level import Level, Levels
+from world.level_objects import InteractiveType, ExitDoor, CollideType, DroppedItem, Sign, Lava
 from world.npc import RobotEnemy, NPC
 
 
 # Returns a list containing the contents of each level file in the game assets
 def get_levels():
     levels = []
-    maps_dir = os.path.join('assets', 'levels')
-    level_files = [f for f in os.listdir(maps_dir)
-                   if os.path.isfile(os.path.join(maps_dir, f)) and f.lower().endswith(".txt")]
+    levels_dir = os.path.join('assets', 'levels')
+    level_files = [f for f in os.listdir(levels_dir)
+                   if os.path.isfile(os.path.join(levels_dir, f)) and f.lower().endswith(".txt")]
     for level in sorted(level_files, key=level_sorter):
-        with open(f'{os.path.join(maps_dir, level)}', 'r') as file:
+        with open(f'{os.path.join(levels_dir, level)}', 'r') as file:
             levels.append(file.read())
     return levels
 
@@ -117,27 +117,27 @@ def draw_window(player, level, elapsed_time, state):
 # Update bullets if they collide with an entity or an object
 def draw_bullets(player, level):
     npc_collision = False
-    bullets = level.map_bullets.copy()
+    bullets = level.level_bullets.copy()
     for bullet in bullets:
-        for npc in level.map_npc:
+        for npc in level.level_npc:
             if bullet.rect.colliderect(npc.rect) and isinstance(bullet.origin(), Player):
                 npc.change_health(-1)
                 npc_collision = True
             if npc.HEALTH <= 0:
-                level.map_npc.remove(npc)
+                level.level_npc.remove(npc)
         if bullet.facing == bullet.LEFT:
             bullet.rect.x -= bullet.SPEED
         if bullet.facing == bullet.RIGHT:
             bullet.rect.x += bullet.SPEED
         if bullet.rect.x < 0 or bullet.rect.x > WIDTH:
-            level.map_bullets.remove(bullet)
+            level.level_bullets.remove(bullet)
         elif bullet.rect.colliderect(player.rect) and isinstance(bullet.origin(), NPC):
             player.change_hp(-1)
-            level.map_bullets.remove(bullet)
+            level.level_bullets.remove(bullet)
         elif npc_collision:
-            level.map_bullets.remove(bullet)
-        elif any(wall.rect.colliderect(bullet.rect) and isinstance(wall, CollideType) for wall in level.map_objects):
-            level.map_bullets.remove(bullet)
+            level.level_bullets.remove(bullet)
+        elif any(wall.rect.colliderect(bullet.rect) and isinstance(wall, CollideType) for wall in level.level_objects):
+            level.level_bullets.remove(bullet)
         else:
             bullet.draw(WIN)
         npc_collision = False
@@ -169,12 +169,12 @@ def draw_transition(transition_frames):
 
 # For every physical object in the current level, check if the player is colliding with it
 # If the object is an InteractiveType, display a popup prompting the player to interact
-def check_for_interactions(global_map, player):
-    for map_object in global_map.map_objects:
-        if isinstance(map_object, InteractiveType):
-            if map_object.rect.colliderect(player.rect):
-                draw_popup(map_object.POPUP, player)
-                return True, map_object
+def check_for_interactions(level, player):
+    for level_object in level.level_objects:
+        if isinstance(level_object, InteractiveType):
+            if level_object.rect.colliderect(player.rect):
+                draw_popup(level_object.POPUP, player)
+                return True, level_object
     return False, None
 
 
@@ -239,12 +239,12 @@ def main():
     levels = []
     next_level_title = ""
 
-    # Serialize each level file into a Map object and append to a list
+    # Serialize each level file into a Level object and append to a list
     for index, level in enumerate(get_levels()):
-        levels.append(Map(f'Level {index + 1}', level))
+        levels.append(Level(f'Level {index + 1}', level))
 
     # Turn the list into an object which holds series of levels
-    levels = Maps(levels, player)
+    levels = Levels(levels, player)
 
     # Variables to hold interaction and sign state
     hovering: (bool, InteractiveType) = (False, None)
@@ -431,7 +431,7 @@ def main():
         draw_window(player, current_level, elapsed_time, state)
 
         # Increment an enemy's alert timer if they are alerted
-        for enemy in levels.current.map_npc:
+        for enemy in levels.current.level_npc:
             if isinstance(enemy, RobotEnemy):
                 if enemy.alerted:
                     enemy.alerted_time += 1 / FPS

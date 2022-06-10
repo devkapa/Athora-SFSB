@@ -2,19 +2,25 @@ import os
 
 import pygame
 
-from world.map_objects import CollideType
+from world.level_objects import CollideType
 
 
 class Bullet:
 
+    # Set bullet pixel dimensions and load the bullet texture
     BULLET_WIDTH, BULLET_HEIGHT = 10, 5
     BULLET_TEXTURE = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'bullet.png')).convert_alpha()
+
+    # Enum values for bullet direction
     RIGHT, LEFT = 0, 1
 
+    # Load the bullet shoot sound
     SHOOT_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'misc', 'shoot.wav'))
 
+    # Set the bullet speed per frame
     SPEED = 4
 
+    # Initialise a variable to store the entity which shot the bullet
     ORIGIN = None
 
     rect: pygame.Rect
@@ -35,9 +41,11 @@ class Bullet:
 
 class NPC:
 
+    # Set variables to store the health of the NPC
     HEALTH: int
     MAX_HEALTH: int
 
+    # Load the images to be used for the health bar
     HEALTH_BAR = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'health_bkg.png')).convert_alpha()
     HEALTH_OVERLAY = 34
 
@@ -55,6 +63,7 @@ class NPC:
 
     rect: pygame.Rect
 
+    # Initialise NPC textures, rectangle and health
     def __init__(self, pos_x, pos_y, health, texture):
         self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'sprites', 'npc', texture)).convert_alpha()
         self.TEXTURE_NORMAL = pygame.transform.scale(self.TEXTURE_IMG, (self.NPC_WIDTH, self.NPC_HEIGHT))
@@ -64,6 +73,7 @@ class NPC:
         self.HEALTH = health
         self.MAX_HEALTH = health
 
+    # Draw NPC to the window surface, and draw a health bar beneath it if health is lost
     def draw(self, window):
         self.update(window)
         window.blit(self.TEXTURE, (self.rect.x, self.rect.y))
@@ -82,27 +92,27 @@ class NPC:
             elif percent < 1:
                 pygame.draw.rect(window, self.GREEN, ovl)
 
+    # Returns if gravity should be applied to the NPC
     def apply_gravity(self, level):
         if not self.check_collision(level, (self.rect.x, self.rect.y + self.GRAVITY)):
             return True
         return False
 
+    # Check if the NPC is going to collide with a CollideType
     def check_collision(self, level, change):
         potential_rect = pygame.Rect(change[0], change[1], self.NPC_WIDTH, self.NPC_HEIGHT)
-        for map_object in level.map_objects:
-            if isinstance(map_object, CollideType):
-                if map_object.rect.colliderect(potential_rect):
+        for level_object in level.level_objects:
+            if isinstance(level_object, CollideType):
+                if level_object.rect.colliderect(potential_rect):
                     return True
         return False
 
+    # Apply gravity
     def handle_movement(self, level):
-        x_change = 0
-        y_change = 0
         if self.apply_gravity(level):
-            y_change = self.GRAVITY
-        self.rect.x += x_change
-        self.rect.y += y_change
+            self.rect.y += self.GRAVITY
 
+    # Function to be called when NPC is drawn to apply movement rules
     def update(self, window):
         self.handle_movement(pygame.level)
 
@@ -117,26 +127,33 @@ class RobotEnemy(NPC):
 
     texture = 'robot-preview.png'
 
+    # Variables to be used to store if and how long the NPC is alerted
     alerted = False
     alerted_time = 0
-    alerted_image = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'exclamation.png')).convert_alpha()
+    ALERTED_IMAGE = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'exclamation.png')).convert_alpha()
     ALERTED_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'npc', 'alert.mp3'))
 
+    # Dimensions of the 'range' rectangle centered around the NPC
     RADIUS_WIDTH, RADIUS_HEIGHT = 500, 150
     viewing_radius: pygame.Rect
 
-    last_bullet = -1
-
+    # Initialise the base class and 'range' rectangle around the NPC
     def __init__(self, pos_x, pos_y, health=10):
         super().__init__(pos_x, pos_y, health, self.texture)
         self.viewing_radius = pygame.Rect(self.rect.x - (self.RADIUS_WIDTH / 2 + self.NPC_WIDTH / 2),
                                           self.rect.y - (self.RADIUS_HEIGHT / 2 + self.NPC_HEIGHT / 2),
                                           self.RADIUS_WIDTH, self.RADIUS_HEIGHT)
 
+    # Update the position of the 'range' rectangle if the NPC moves
+    # If the player is in the rectangle, alert the NPC and start shooting
     def update(self, window):
         super().update(window)
+
+        # Update x and y position of the 'range' rectangle
         self.viewing_radius.x = self.rect.x - self.RADIUS_WIDTH / 2 + self.NPC_WIDTH / 2
         self.viewing_radius.y = self.rect.y - self.RADIUS_HEIGHT / 2 + self.NPC_HEIGHT / 2
+
+        # Check for player collision with 'range' rectangle
         if pygame.player.rect.colliderect(self.viewing_radius) and pygame.player.HEALTH > 0:
             if not self.alerted:
                 self.alerted = True
@@ -151,9 +168,12 @@ class RobotEnemy(NPC):
             self.alerted = False
             self.alerted_time = 0
 
+        # While alerted, draw an exclamation above the NPC
         if self.alerted_time > 0:
-            window.blit(self.alerted_image, (self.rect.x + self.rect.width / 2 - self.alerted_image.get_width() / 2,
-                                             self.rect.y - self.alerted_image.get_height()))
+            window.blit(self.ALERTED_IMAGE, (self.rect.x + self.rect.width / 2 - self.ALERTED_IMAGE.get_width() / 2,
+                                             self.rect.y - self.ALERTED_IMAGE.get_height()))
+
+        # Once been alerted for more than one second, start shooting
         if self.alerted_time > 1:
             x = 0
             y = self.rect.y + (self.rect.h / 2)
@@ -163,9 +183,9 @@ class RobotEnemy(NPC):
                 x = self.rect.x + self.rect.w
 
             own_bullets = 0
-            for bullet in pygame.level.map_bullets:
+            for bullet in pygame.level.level_bullets:
                 if bullet.origin() == self:
                     own_bullets += 1
             if own_bullets < 3:
-                pygame.level.map_bullets.append(Bullet(x, y, self.FACING, self))
+                pygame.level.level_bullets.append(Bullet(x, y, self.FACING, self))
                 self.alerted_time = 0
