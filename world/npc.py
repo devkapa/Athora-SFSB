@@ -120,6 +120,7 @@ class RobotEnemy(NPC):
     alerted = False
     alerted_time = 0
     alerted_image = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'exclamation.png')).convert_alpha()
+    ALERTED_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'alert.mp3'))
 
     RADIUS_WIDTH, RADIUS_HEIGHT = 500, 150
     viewing_radius: pygame.Rect
@@ -136,9 +137,10 @@ class RobotEnemy(NPC):
         super().update(window)
         self.viewing_radius.x = self.rect.x - self.RADIUS_WIDTH / 2 + self.NPC_WIDTH / 2
         self.viewing_radius.y = self.rect.y - self.RADIUS_HEIGHT / 2 + self.NPC_HEIGHT / 2
-
         if pygame.player.rect.colliderect(self.viewing_radius):
-            self.alerted = True
+            if not self.alerted:
+                self.alerted = True
+                self.ALERTED_SOUND.play()
             if pygame.player.rect.x + pygame.player.rect.width / 2 < self.viewing_radius.x + self.viewing_radius.width / 2:
                 self.FACING = self.LEFT
                 self.TEXTURE = self.TEXTURE_NORMAL
