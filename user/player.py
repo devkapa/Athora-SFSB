@@ -226,7 +226,12 @@ class Player:
     def remove_from_inventory(self):
         if self.inventory[self.inventory_selected_slot] is not None:
             current_item = self.inventory[self.inventory_selected_slot]
-            dropped_current_item = DroppedItem((self.rect.x + self.rect.width)/DroppedItem.OBJECT_WIDTH,
+            x = 0
+            if self.direction[self.RIGHT]:
+                x = self.rect.x + self.rect.width
+            if self.direction[self.LEFT]:
+                x = self.rect.x - self.rect.width
+            dropped_current_item = DroppedItem(x/DroppedItem.OBJECT_WIDTH,
                                                self.rect.y/DroppedItem.OBJECT_HEIGHT, current_item)
             pygame.level.map_objects.append(dropped_current_item)
             self.inventory[self.inventory_selected_slot] = None

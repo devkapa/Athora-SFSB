@@ -25,7 +25,7 @@ class ObjectType:
         self.rect.height = y
 
 
-class Floor(ObjectType):
+class Background(ObjectType):
 
     texture = 'floor.png'
 
