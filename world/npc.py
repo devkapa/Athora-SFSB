@@ -11,6 +11,8 @@ class Bullet:
     BULLET_TEXTURE = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'bullet.png')).convert_alpha()
     RIGHT, LEFT = 0, 1
 
+    SHOOT_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'shoot.wav'))
+
     SPEED = 4
 
     ORIGIN = None
@@ -22,6 +24,7 @@ class Bullet:
         self.rect = pygame.Rect(x, y, self.BULLET_WIDTH, self.BULLET_HEIGHT)
         self.facing = facing
         self.ORIGIN = origin
+        self.SHOOT_SOUND.play()
 
     def draw(self, surface):
         surface.blit(self.BULLET_TEXTURE, (self.rect.x, self.rect.y))

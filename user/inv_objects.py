@@ -40,6 +40,8 @@ class Potion(InventoryObject):
     NAME = 'Potion'
     TEXTURE = 'potion.png'
 
+    DRINK_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'gulp.wav'))
+
     DRINK = pygame.USEREVENT + 5
     DRINK_EVENT = pygame.event.Event(DRINK)
     hp: int
@@ -49,6 +51,7 @@ class Potion(InventoryObject):
         self.hp = hp
 
     def use(self):
+        self.DRINK_SOUND.play()
         self.DRINK_EVENT.potion = self
         pygame.event.post(self.DRINK_EVENT)
 
@@ -59,6 +62,8 @@ class Gun(InventoryObject):
     TEXTURE = 'gun.png'
 
     RELOAD_TEXT = "'R' to reload"
+    RELOAD_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'reload.wav'))
+
     EMPTY_GUN = pygame.USEREVENT + 4
     EMPTY_GUN_EVENT = pygame.event.Event(EMPTY_GUN)
     chamber = 3
@@ -90,4 +95,5 @@ class Gun(InventoryObject):
 
     def reload(self):
         if self.chamber == 0:
+            self.RELOAD_SOUND.play()
             self.chamber = 3

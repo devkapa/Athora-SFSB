@@ -32,6 +32,9 @@ class Player:
     PLAYER_LEFT_WALKING = [PLAYER_LEFT_WALK_1, PLAYER_LEFT, PLAYER_LEFT_WALK_2, PLAYER_LEFT]
     PLAYER_RIGHT_WALKING = [PLAYER_RIGHT_WALK_1, PLAYER_RIGHT, PLAYER_RIGHT_WALK_2, PLAYER_RIGHT]
 
+    JUMP_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'jump.wav'))
+    COLLECT_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'collect.wav'))
+
     HEART_WIDTH, HEART_HEIGHT = 36, 36
 
     FULL_HEART_IMG = pygame.image.load(os.path.join('assets', 'textures', 'player', 'full_heart.png')).convert_alpha()
@@ -87,6 +90,7 @@ class Player:
                 self.direction = (self.direction[self.RIGHT], self.direction[self.LEFT], False, True)
             else:
                 if keys_pressed[pygame.K_SPACE]:
+                    self.JUMP_NOISE.play()
                     self.jumping = True
         else:
             if self.jump_index < len(self.jumps) - 1:
@@ -181,6 +185,11 @@ class Player:
                 self.animation_frame_count = 0
                 break
 
+    def _add(self, item, where=inventory_selected_slot):
+        self.COLLECT_NOISE.play()
+        self.inventory[where] = item.INV_OBJECT
+        pygame.level.map_objects.remove(item)
+
     def add_to_inventory(self, item):
         if self.inventory[self.inventory_selected_slot] is not None:
             if self.inventory[1 - self.inventory_selected_slot] is not None:
@@ -188,15 +197,12 @@ class Player:
                 dropped_current_item = DroppedItem((self.rect.x + self.rect.width)/DroppedItem.OBJECT_WIDTH,
                                                    self.rect.y/DroppedItem.OBJECT_HEIGHT, current_item)
                 pygame.level.map_objects.append(dropped_current_item)
-                self.inventory[self.inventory_selected_slot] = item.INV_OBJECT
-                pygame.level.map_objects.remove(item)
+                self._add(item)
             else:
-                self.inventory[1 - self.inventory_selected_slot] = item.INV_OBJECT
+                self._add(item, where=1 - self.inventory_selected_slot)
                 self.inventory_selected_slot = 1 - self.inventory_selected_slot
-                pygame.level.map_objects.remove(item)
         else:
-            self.inventory[self.inventory_selected_slot] = item.INV_OBJECT
-            pygame.level.map_objects.remove(item)
+            self._add(item)
 
     def remove_from_inventory(self):
         if self.inventory[self.inventory_selected_slot] is not None:

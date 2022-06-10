@@ -10,6 +10,7 @@ flags = DOUBLEBUF
 
 pygame.font.init()
 pygame.display.init()
+pygame.mixer.init()
 
 WHITE = (255, 255, 255)
 AQUA = (0, 255, 255)
