@@ -64,8 +64,7 @@ class Gun(InventoryObject):
     RELOAD_TEXT = "'R' to reload"
     RELOAD_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'player', 'reload.wav'))
 
-    EMPTY_GUN = pygame.USEREVENT + 4
-    EMPTY_GUN_EVENT = pygame.event.Event(EMPTY_GUN)
+    EMPTY = False
     chamber = 3
 
     def __init__(self):
@@ -76,7 +75,7 @@ class Gun(InventoryObject):
         bullets = render_font(str(self.chamber), 15)
         surface.blit(bullets, (slot[0] + 70 - bullets.get_width(), slot[1] + 70 - bullets.get_height()))
         if self.chamber == 0:
-            pygame.event.post(self.EMPTY_GUN_EVENT)
+            self.EMPTY = True
 
     def use(self):
         if self.chamber == 0:
@@ -96,4 +95,5 @@ class Gun(InventoryObject):
     def reload(self):
         if self.chamber == 0:
             self.RELOAD_SOUND.play()
+            self.EMPTY = False
             self.chamber = 3
