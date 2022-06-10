@@ -44,7 +44,7 @@ SIGN_OPEN, SIGN_OBJ = 0, 1
 IS_INTERACTING, INTERACTING_WITH = 0, 1
 
 AMBIENCE_CHANNEL = pygame.mixer.Channel(6)
-AMBIENCE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'ambience.wav'))
+AMBIENCE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'misc', 'ambience.wav'))
 
 
 from user.inv_objects import Gun, Potion
@@ -303,10 +303,12 @@ def main():
                 if event.type == ExitDoor.ENTER:
                     if levels.next() is not None:
                         changing_levels = True
+                        ExitDoor.PORTAL_SOUND.play()
                         state = TRANSITION
                     else:
-                        sign = Sign(0, 0, "This portal doesn't lead\nanywhere.")
-                        sign_status = (True, sign)
+                        if sign_status[SIGN_OBJ] != ExitDoor.NO_LEVEL:
+                            ExitDoor.NO_LEVEL.READ_SOUND.play()
+                            sign_status = (True, ExitDoor.NO_LEVEL)
 
                 if event.type == Gun.EMPTY_GUN:
                     gun_empty = True
@@ -323,7 +325,9 @@ def main():
 
                 if event.type == Sign.READ:
                     sign = event.sign
-                    sign_status = (True, sign)
+                    if sign_status[SIGN_OBJ] != sign:
+                        sign.READ_SOUND.play()
+                        sign_status = (True, sign)
 
                 if event.type == Lava.BURN and damage_frames == 0:
                     player.change_hp(-1)

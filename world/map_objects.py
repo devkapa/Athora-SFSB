@@ -94,24 +94,6 @@ class InteractiveType(ObjectType):
         pass
 
 
-class ExitDoor(InteractiveType):
-
-    POPUP = "'F' to enter"
-    ENTER = pygame.USEREVENT + 2
-    EVENT = pygame.event.Event(ENTER)
-    TEXTURE = 'trapdoor.png'
-
-    PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'portal.wav'))
-
-    def __init__(self, pos_x, pos_y):
-        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
-        self.set_size(self.OBJECT_WIDTH, 64)
-
-    def on_interact(self):
-        self.PORTAL_SOUND.play()
-        pygame.event.post(self.EVENT)
-
-
 class Sign(InteractiveType):
 
     POPUP = "'F' to read Sign"
@@ -120,12 +102,32 @@ class Sign(InteractiveType):
     TEXTURE = 'signpost.png'
     CONTENTS: str
 
+    READ_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'pop.ogg'))
+
     def __init__(self, pos_x, pos_y, contents):
         super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
         self.CONTENTS = contents
 
     def on_interact(self):
         self.EVENT.sign = self
+        pygame.event.post(self.EVENT)
+
+
+class ExitDoor(InteractiveType):
+
+    POPUP = "'F' to enter"
+    ENTER = pygame.USEREVENT + 2
+    EVENT = pygame.event.Event(ENTER)
+    TEXTURE = 'trapdoor.png'
+
+    NO_LEVEL = Sign(0, 0, "This portal doesn't lead\nanywhere.")
+    PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'portal.wav'))
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+        self.set_size(self.OBJECT_WIDTH, 64)
+
+    def on_interact(self):
         pygame.event.post(self.EVENT)
 
 

@@ -11,7 +11,7 @@ class Bullet:
     BULLET_TEXTURE = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'bullet.png')).convert_alpha()
     RIGHT, LEFT = 0, 1
 
-    SHOOT_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'shoot.wav'))
+    SHOOT_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'misc', 'shoot.wav'))
 
     SPEED = 4
 
@@ -120,7 +120,7 @@ class RobotEnemy(NPC):
     alerted = False
     alerted_time = 0
     alerted_image = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'exclamation.png')).convert_alpha()
-    ALERTED_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'alert.mp3'))
+    ALERTED_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'npc', 'alert.mp3'))
 
     RADIUS_WIDTH, RADIUS_HEIGHT = 500, 150
     viewing_radius: pygame.Rect
