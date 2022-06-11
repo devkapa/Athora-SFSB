@@ -2,22 +2,26 @@
 
 
 
-                                                           B                      B
-                                                            W      C       )     W
+                                                           B    C                 B
+                                                            W              )     W
                                                             WWWWWWWWWWWWWWWWWW  IW
                                                             W                  IWW
-                                                            W          EE     IWWW
-                                                            W                IWWWW
+                                                            W                 IWWW
+                                                            W          EE    IWWWW
+                                                            W               IWWWWW
                                                             WJ  WWWWWWWWWWWWWWWWWW
                                                             WWJ                  W
-                                                            WWWJ       EE        W
-                                                            WWWWJ                W
-                                                            WWWWWWWWWWWWWWWWWW  IW
-B                                                           W                  IWW
-B     S                                  E E E                                IWWW
-B        &        *         (                                                IWWWW
+                                                            WWWJ                 W
+                                                            WWWWJ      EE        W
+                                                            WWWWWJ               W
+                                                            WWWWWWWWWWWWWWWWW   IW
+                                                            W                  IWW
+B      S                                                    W                 IWWW
+B                                        E E E                               IWWWW
+B      B &        *         (                                               IWWWWW
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
