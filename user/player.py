@@ -133,8 +133,13 @@ class Player:
         else:
             # Change the y position of the player gradually
             if self.jump_index < len(self.jumps) - 1:
-                y_change = self.jumps[self.jump_index]
-                self.jump_index += 1
+                if not self.check_collision(level, (self.rect.x, self.rect.y + self.jumps[self.jump_index])):
+                    y_change = self.jumps[self.jump_index]
+                    self.direction = (self.direction[self.RIGHT], self.direction[self.LEFT], True, False)
+                    self.jump_index += 1
+                else:
+                    self.jump_index = 0
+                    self.jumping = False
             else:
                 self.jump_index = 0
                 self.jumping = False

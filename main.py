@@ -439,7 +439,7 @@ def main():
         # If a Gun in the player's inventory is empty, prompt them to reload
         for item in player.inventory:
             if isinstance(item, Gun):
-                if item.EMPTY:
+                if item.EMPTY and player.inventory[player.inventory_selected_slot] == item:
                     draw_popup(Gun.RELOAD_TEXT, player)
 
         # Check if the player is hovering over an InteractiveType object

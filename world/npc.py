@@ -134,7 +134,7 @@ class RobotEnemy(NPC):
     ALERTED_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'npc', 'alert.mp3'))
 
     # Dimensions of the 'range' rectangle centered around the NPC
-    RADIUS_WIDTH, RADIUS_HEIGHT = 500, 150
+    RADIUS_WIDTH, RADIUS_HEIGHT = 500, NPC.NPC_HEIGHT
     viewing_radius: pygame.Rect
 
     # Initialise the base class and 'range' rectangle around the NPC

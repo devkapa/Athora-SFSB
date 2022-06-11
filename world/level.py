@@ -82,9 +82,6 @@ class Level:
                 if char == "^":
                     self.level_objects.append(Sign(char_index, line_index,
                                                  "Good job finishing the\ntutorial. Enter this portal\nto begin your journey!"))
-                if char == "^":
-                    self.level_objects.append(Sign(char_index, line_index,
-                                                 "Good job finishing the\ntutorial. Enter this portal\nto begin your journey!"))
                 if char == "&":
                     self.level_objects.append(Sign(char_index, line_index,
                                                  "Welcome back.\nYour conscience has been \nbothering you for a while."))

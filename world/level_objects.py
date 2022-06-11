@@ -170,7 +170,7 @@ class ExitHelicopter(InteractiveType):
 
     def __init__(self, pos_x, pos_y):
         super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
-        self.set_size(300, 120)
+        self.set_size(300, 128)
 
 
 class Lava(InteractiveType):
