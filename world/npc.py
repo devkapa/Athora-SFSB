@@ -125,7 +125,7 @@ class NPC:
 
 class RobotEnemy(NPC):
 
-    texture = 'robot-preview.png'
+    texture = 'robot.png'
 
     # Variables to be used to store if and how long the NPC is alerted
     alerted = False

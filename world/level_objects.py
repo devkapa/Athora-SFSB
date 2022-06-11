@@ -81,6 +81,22 @@ class Dirt(CollideType):
         super().__init__(pos_x, pos_y, self.texture)
 
 
+class StairLeft(CollideType):
+
+    texture = 'stair_left.png'
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
+
+class StairRight(CollideType):
+
+    texture = 'stair_right.png'
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
+
 class Barrier(CollideType):
 
     texture = 'barrier.png'
@@ -140,6 +156,21 @@ class ExitDoor(InteractiveType):
     def __init__(self, pos_x, pos_y):
         super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
         self.set_size(self.OBJECT_WIDTH, 64)
+
+
+class ExitHelicopter(InteractiveType):
+
+    POPUP = "'F' to enter"
+    ENTER = pygame.USEREVENT + 2
+    EVENT = pygame.event.Event(ENTER)
+    TEXTURE = 'helicopter.png'
+
+    NO_LEVEL = Sign(0, 0, "This helicopter doesn't lead\nanywhere.")
+    PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'portal.wav'))
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+        self.set_size(300, 120)
 
 
 class Lava(InteractiveType):

@@ -1,6 +1,7 @@
 from user.inv_objects import Potion, Gun
 from user.player import Player
-from world.level_objects import ObjectType, Background, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem, Sign, Lava
+from world.level_objects import ObjectType, Background, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem, Sign, \
+    Lava, ExitHelicopter, StairLeft, StairRight
 from world.npc import RobotEnemy, NPC, Bullet
 
 
@@ -53,6 +54,10 @@ class Level:
                     self.level_objects.append(Grass(char_index, line_index))
                 if char == "D":
                     self.level_objects.append(Dirt(char_index, line_index))
+                if char == "I":
+                    self.level_objects.append(StairLeft(char_index, line_index))
+                if char == "J":
+                    self.level_objects.append(StairRight(char_index, line_index))
                 if char == "L":
                     self.level_objects.append(Lava(char_index, line_index))
                 if char == "E":
@@ -77,6 +82,23 @@ class Level:
                 if char == "^":
                     self.level_objects.append(Sign(char_index, line_index,
                                                  "Good job finishing the\ntutorial. Enter this portal\nto begin your journey!"))
+                if char == "^":
+                    self.level_objects.append(Sign(char_index, line_index,
+                                                 "Good job finishing the\ntutorial. Enter this portal\nto begin your journey!"))
+                if char == "&":
+                    self.level_objects.append(Sign(char_index, line_index,
+                                                 "Welcome back.\nYour conscience has been \nbothering you for a while."))
+                if char == "*":
+                    self.level_objects.append(Sign(char_index, line_index,
+                                                 "Figure out what's\ngoing on here.\nGood luck"))
+                if char == "(":
+                    self.level_objects.append(Sign(char_index, line_index,
+                                                 "Look out\nthere are guards ahead."))
+                if char == ")":
+                    self.level_objects.append(Sign(char_index,line_index,
+                                                   "Self flying helicopter\nPre-production unit\nAuthorised personnel only"))
+                if char == "C":
+                    self.level_objects.append(ExitHelicopter(char_index, line_index))
 
     # Call the draw function of every object and NPC within the map, given it is currently visible in the game's viewport
     def draw(self, surface):
