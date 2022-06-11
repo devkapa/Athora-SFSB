@@ -43,6 +43,7 @@ class Player:
     animation_frame_count = 0
 
     # All sound effects made by the player
+    JUMP_NOISE_CHANNEL = pygame.mixer.Channel(4)
     JUMP_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'player', 'jump.wav'))
     COLLECT_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'player', 'collect.wav'))
     DEATH_NOISE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'player', 'death.flac'))
@@ -90,6 +91,8 @@ class Player:
     inventory: list
     inventory_selected_slot = 0
 
+    nearest_grav = 0
+
     def __init__(self, spawn_x=0, spawn_y=0):
         self.SPAWN_X = spawn_x
         self.SPAWN_Y = spawn_y
@@ -117,18 +120,22 @@ class Player:
         self.prev_pos_y = self.rect.y
         x_change = 0
         y_change = 0
+        grav_check = self.apply_gravity(level)
         # If the player is not jumping, apply gravity and check if they jumped
         if not self.jumping:
-            grav_check = self.apply_gravity(level)
             if grav_check[0]:
                 if grav_check[1]:
                     y_change = self.GRAVITY
+                    self.nearest_grav = self.GRAVITY
                 if not grav_check[1]:
                     y_change = 1
+                    self.nearest_grav = 1
                 self.direction = (self.direction[self.RIGHT], self.direction[self.LEFT], False, True)
             else:
+                self.nearest_grav = 0
                 if keys_pressed[pygame.K_SPACE]:
-                    self.JUMP_NOISE.play()
+                    if not self.JUMP_NOISE_CHANNEL.get_busy():
+                        self.JUMP_NOISE_CHANNEL.play(self.JUMP_NOISE)
                     self.jumping = True
         else:
             # Change the y position of the player gradually
@@ -158,23 +165,23 @@ class Player:
         # If the player moves 3/4 across the screen, both vertically and horizontally,
         # cancel movement and move the map instead to create a scrolling effect
         if x_change != 0:
-            if self.rect.x + x_change > window.get_width() * 0.75 and self.direction[self.RIGHT]:
+            if self.rect.x + x_change > window.get_width() * 0.75:
                 level.scroll(-self.VELOCITY, 0)
                 x_change = 0
                 self.prev_pos_x -= 1
-            if self.rect.x + x_change < window.get_width() * 0.25 and self.direction[self.LEFT]:
+            if self.rect.x + x_change < window.get_width() * 0.25:
                 level.scroll(self.VELOCITY, 0)
                 x_change = 0
                 self.prev_pos_x += 1
-        if y_change != 0:
-            if self.rect.y + y_change > window.get_height() * 0.75 and self.direction[self.DOWN]:
-                level.scroll(0, -self.GRAVITY)
-                y_change = 0
-                self.prev_pos_y -= self.GRAVITY
-            if self.rect.y + y_change < window.get_height() * 0.25 and self.direction[self.UP]:
-                level.scroll(0, self.GRAVITY)
-                y_change = 0
-                self.prev_pos_y += self.GRAVITY
+
+        if self.rect.y + y_change < window.get_height() * 0.25:
+            level.scroll(0, self.GRAVITY)
+            y_change = 0
+            self.prev_pos_y += self.GRAVITY
+        if self.rect.y + self.rect.h + y_change > window.get_height() * 0.75:
+            y_change = -self.nearest_grav
+            level.scroll(0, -self.nearest_grav)
+            self.prev_pos_y -= self.nearest_grav
 
         self.rect.x += x_change
         self.rect.y += y_change

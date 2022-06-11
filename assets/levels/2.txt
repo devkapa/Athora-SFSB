@@ -1,7 +1,7 @@
 
 
                                                                C
-                                                            B                    B
+                                                                                 B
                                                             B                    B
                                                             W              )     W
                                                             WWWWWWWWWWWWWWWWW   IW
@@ -13,12 +13,12 @@
                                                             WWJ                  W
                                                             WWWJ                 W
                                                             WWWWJ      EE        W
-        S                                                   WWWWWJ               W
+                                                            WWWWWJ               W
                                                             WWWWWWWWWWWWWWWWW   IW
                                                             W                  IWW
-B                                                           W                 IWWW
+B       S                                                   W                 IWWW
 B                                        E E E                               IWWWW
-B      B &        *         (                                               IWWWWW
+B        &        *         (                                               IWWWWW
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
