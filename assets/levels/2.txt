@@ -2,23 +2,43 @@
 
                                                                C
                                                             B                    B
-                                                            B                    B
-                                                            W              )     W
-                                                            WWWWWWWWWWWWWWWWW   IW
-                                                            W                  IWW
-                                                            W                 IWWW
-                                                            W          EE    IWWWW
-                                                            W               IWWWWW
-                                                            WJ   WWWWWWWWWWWWWWWWW
-                                                            WWJ                  W
-                                                            WWWJ                 W
-                                                            WWWWJ      EE        W
-                                                            WWWWWJ               W
-                                                            WWWWWWWWWWWWWWWWW   IW
-                                                            W                  IWW
-      B S                                                   W                 IWWW
-      B                                  E E E                               IWWWW
-      B  &        *         (                                               IWWWWW
+                                                            B         EEE        B
+                                                            W            )       W
+                                                            WWWWWWWWWWWWWWWWW---IW
+                                                            W------------------IWW
+                                                            W-----------------IWWW
+                                                            W----------------IWWWW
+                                                            W---------------IWWWWW
+                                                            WJ---WWWWWWWWWWWWWWWWW
+                                                            WWJ------------------W
+                                                            WWWJ-----------------W
+                                                            WWWWJ-----ę----------W
+                                                            WWWWWJ---------------W
+                                                            WWWWWWWWWWWWWWWWW---IW
+                                                            W------------------IWW
+                                                            W-----------------IWWW
+                                                            W----------ę-----IWWWW
+                                                            W---------------IWWWWW
+                                                            WJ---WWWWWWWWWWWWWWWWW
+                                                            WWJ------------------W
+                                                            WWWJ---------A     --W
+                                                            WWWWJ--------      --W
+                                                            WWWWWJ-----O---------W
+                                                            WWWWWWWWWWWWWWWWW---IW
+                                                            W------------------IWW
+                                                            W-----------------IWWW
+                                                            W-------ę--------IWWWW
+                                                            W---------------IWWWWW
+                                                            WJ---WWWWWWWWWWWWWWWWW
+                                                            WWJ------------------W
+                                                            WWWJ-----------------W
+                                                            WWWWJ-----ę----------W
+                                                            WWWWWJ---------------W
+                                                            WWWWWWWWWWWWWWWWW---IW
+                                                            W------------------IWW
+      B S                                                   W-----------------IWWW
+      B                                  E E E              -----------------IWWWW
+      B  &        *         (                               ----œ-----------IWWWWW
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD

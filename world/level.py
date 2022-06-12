@@ -1,7 +1,7 @@
 from user.inv_objects import Potion, Gun
 from user.player import Player
 from world.level_objects import ObjectType, Background, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem, Sign, \
-    Lava, ExitHelicopter, StairLeft, StairRight
+    Lava, ExitHelicopter, StairLeft, StairRight, Printer, Board
 from world.npc import RobotEnemy, NPC, Bullet
 
 
@@ -60,10 +60,19 @@ class Level:
                     self.level_objects.append(StairRight(char_index, line_index))
                 if char == "L":
                     self.level_objects.append(Lava(char_index, line_index))
+                if char == "A":
+                    self.level_objects.append(Board(char_index, line_index))
                 if char == "E":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
+                if char == "ę":
+                    self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
+                    self.level_objects.append(Background(char_index, line_index))
                 if char == "R":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32, health=3))
+                if char == "O":
+                    self.level_objects.append(Background(char_index, line_index))
+                    self.level_objects.append(Printer(char_index, line_index,
+                                                 "Black: 0%  Yellow: 0%\nCyan: 0%  Magenta: 100%\nFewlett Packard"))
                 if char == "!":
                     self.level_objects.append(Sign(char_index, line_index,
                                                  "Welcome to Athora!\nPress 'A' & 'D' or '←' & '→'\nto move!"))
@@ -94,6 +103,10 @@ class Level:
                 if char == ")":
                     self.level_objects.append(Sign(char_index,line_index,
                                                    "Self flying helicopter\nPre-production unit\nAuthorised personnel only"))
+                if char == "œ":
+                    self.level_objects.append(Background(char_index, line_index))
+                    self.level_objects.append(Sign(char_index,line_index,
+                                                   "Welcome to SpaceF\nleading in innovation\nas the only company."))
                 if char == "C":
                     self.level_objects.append(ExitHelicopter(char_index, line_index))
 

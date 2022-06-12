@@ -105,6 +105,15 @@ class Barrier(CollideType):
         super().__init__(pos_x, pos_y, self.texture)
 
 
+class Board(ObjectType):
+
+    texture = 'todo.png'
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+        self.set_size(192, 64)
+
+
 # An extension of the ObjectType that, when collided with, allows for players to interact with
 class InteractiveType(ObjectType):
 
@@ -166,11 +175,31 @@ class ExitHelicopter(InteractiveType):
     TEXTURE = 'helicopter.png'
 
     NO_LEVEL = Sign(0, 0, "This helicopter doesn't lead\nanywhere.")
-    PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'portal.wav'))
+    PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'helicopter.wav'))
 
     def __init__(self, pos_x, pos_y):
         super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
         self.set_size(300, 128)
+
+
+class Printer(InteractiveType):
+
+    POPUP = "'F' to turn on"
+    READ = pygame.USEREVENT + 7
+    EVENT = pygame.event.Event(READ)
+    TEXTURE = 'printer.png'
+    CONTENTS: str
+
+    READ_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'pop.ogg'))
+
+    def __init__(self, pos_x, pos_y, contents):
+        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+        self.CONTENTS = contents
+        self.set_size(32, 44)
+
+    def on_interact(self):
+        self.EVENT.sign = self
+        super().on_interact()
 
 
 class Lava(InteractiveType):

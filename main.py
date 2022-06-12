@@ -23,6 +23,7 @@ GREEN = (0, 255, 0)
 GRAY = (168, 168, 168)
 BLACK = (0, 0, 0)
 POTION = (111, 142, 109)
+MAGENTA = (255, 0, 255)
 
 # Create an opaque window surface with defined width and height, and set a title
 WIDTH, HEIGHT = 832, 640
@@ -188,11 +189,11 @@ def draw_popup(text, player):
 # Draw a large signpost texture with a multi-line text popup at the bottom of the screen
 def draw_sign(text):
     text = text.split("\n")
-    exit_text = render_text("Enter >", 10, GREEN)
+    exit_text = render_text("Enter >", 10, MAGENTA)
     WIN.blit(SIGNPOST, (20, HEIGHT - SIGNPOST_HEIGHT))
     last_line = 0
     for line in text:
-        sign_text = render_text(line, 20, GREEN)
+        sign_text = render_text(line, 20, MAGENTA)
         WIN.blit(sign_text, (40, HEIGHT - SIGNPOST_HEIGHT + 20 + last_line))
         last_line += sign_text.get_height() + 10
     WIN.blit(exit_text, (SIGNPOST_WIDTH - exit_text.get_width(), HEIGHT - exit_text.get_height() - 10))

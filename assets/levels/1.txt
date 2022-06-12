@@ -12,7 +12,7 @@
       B                                                    W        B
       B                                                  W W        B
       B S               W      P       R         H     W W W     T  B
-      B  !          @   W   #                  $    %  WLWLW   ^    B
+      B  !          @   W    #                 $    %  WLWLW   ^    B
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
