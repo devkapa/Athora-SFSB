@@ -92,6 +92,7 @@ class Player:
     inventory_selected_slot = 0
 
     nearest_grav = 0
+    score = 0
 
     def __init__(self, spawn_x=0, spawn_y=0):
         self.SPAWN_X = spawn_x
@@ -113,6 +114,12 @@ class Player:
     # Return a random sound in the damage noise list
     def play_damage_sound(self):
         return random.choice(self.DAMAGE_NOISES)
+
+    def get_score(self):
+        return self.score
+
+    def add_score(self, amt):
+        self.score += amt
 
     # Change the rect position of the player based on gravity and keyboard inputs
     def handle_movement(self, window, keys_pressed, level):

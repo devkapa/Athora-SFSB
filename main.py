@@ -109,9 +109,11 @@ def draw_window(player, level, elapsed_time, state):
             draw_bullets(player, level)
         player.draw(WIN)
         title = render_text(level.title, 28)
+        score_text = render_text("Score: " + str(player.get_score()), 20)
         timer = render_text(str(datetime.timedelta(seconds=round(elapsed_time))), 20)
         WIN.blit(title, (WIDTH - 5 - title.get_width(), 10))
         WIN.blit(timer, (WIDTH - 5 - timer.get_width(), title.get_height() + title.get_height() / 2))
+        WIN.blit(score_text, (WIDTH - 5 - score_text.get_width(), title.get_height() + title.get_height() / 2 + timer.get_height() + timer.get_height() / 3))
 
 
 # Calculate and draw the position of all bullets on the screen
@@ -125,6 +127,7 @@ def draw_bullets(player, level):
                 npc.change_health(-1)
                 npc_collision = True
             if npc.HEALTH <= 0:
+                player.add_score(10)
                 level.level_npc.remove(npc)
         if bullet.facing == bullet.LEFT:
             bullet.rect.x -= bullet.SPEED

@@ -49,6 +49,9 @@ class NPC:
     HEALTH_BAR = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'health_bkg.png')).convert_alpha()
     HEALTH_OVERLAY = 34
 
+    DEATH = pygame.USEREVENT + 3
+    DEATH_EVENT = pygame.event.Event(DEATH)
+
     GRAVITY = 2
 
     GREEN = (0, 255, 0)
@@ -195,66 +198,6 @@ class RobotBoss(NPC):
 
     texture = 'boss.png'
 
-    # Variables to be used to store if and how long the NPC is alerted
-    alerted = False
-    alerted_time = 0
-    ALERTED_IMAGE = pygame.image.load(os.path.join('assets', 'textures', 'npc', 'exclamation.png')).convert_alpha()
-    ALERTED_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'npc', 'alert.mp3'))
-
-    # Dimensions of the 'range' rectangle centered around the NPC
-    RADIUS_WIDTH, RADIUS_HEIGHT = 500, NPC.NPC_HEIGHT
-    NPC_WIDTH, NPC_HEIGHT = 85, 128
-    viewing_radius: pygame.Rect
-
     # Initialise the base class and 'range' rectangle around the NPC
     def __init__(self, pos_x, pos_y, health=10):
         super().__init__(pos_x, pos_y, health, self.texture)
-        self.viewing_radius = pygame.Rect(self.rect.x - (self.RADIUS_WIDTH / 2 + self.NPC_WIDTH / 2),
-                                          self.rect.y - (self.RADIUS_HEIGHT / 2 + self.NPC_HEIGHT / 2),
-                                          self.RADIUS_WIDTH, self.RADIUS_HEIGHT)
-
-    # Update the position of the 'range' rectangle if the NPC moves
-    # If the player is in the rectangle, alert the NPC and start shooting
-    def update(self, window):
-        super().update(window)
-
-        # Update x and y position of the 'range' rectangle
-        self.viewing_radius.x = self.rect.x - self.RADIUS_WIDTH / 2 + self.NPC_WIDTH / 2
-        self.viewing_radius.y = self.rect.y - self.RADIUS_HEIGHT / 2 + self.NPC_HEIGHT / 2
-
-        # Check for player collision with 'range' rectangle
-        if pygame.player.rect.colliderect(self.viewing_radius) and pygame.player.HEALTH > 0:
-            if not self.alerted:
-                self.alerted = True
-                self.ALERTED_SOUND.play()
-            if pygame.player.rect.x + pygame.player.rect.width / 2 < self.viewing_radius.x + self.viewing_radius.width / 2:
-                self.FACING = self.LEFT
-                self.TEXTURE = self.TEXTURE_NORMAL
-            if pygame.player.rect.x + pygame.player.rect.width / 2 > self.viewing_radius.x + self.viewing_radius.width / 2:
-                self.FACING = self.RIGHT
-                self.TEXTURE = self.TEXTURE_FLIPPED
-        else:
-            self.alerted = False
-            self.alerted_time = 0
-
-        # While alerted, draw an exclamation above the NPC
-        if self.alerted_time > 0:
-            window.blit(self.ALERTED_IMAGE, (self.rect.x + self.rect.width / 2 - self.ALERTED_IMAGE.get_width() / 2,
-                                             self.rect.y - self.ALERTED_IMAGE.get_height()))
-
-        # Once been alerted for more than one second, start shooting
-        if self.alerted_time > 1:
-            x = 0
-            y = self.rect.y + (self.rect.h / 2)
-            if self.FACING == self.LEFT:
-                x = self.rect.x
-            if self.FACING == self.RIGHT:
-                x = self.rect.x + self.rect.w
-
-            own_bullets = 0
-            for bullet in pygame.level.level_bullets:
-                if bullet.origin() == self:
-                    own_bullets += 1
-            if own_bullets < 3:
-                pygame.level.level_bullets.append(Bullet(x, y, self.FACING, self))
-                self.alerted_time = 0

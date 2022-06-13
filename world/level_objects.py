@@ -185,8 +185,8 @@ class Sign(InteractiveType):
 
     READ_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'pop.ogg'))
 
-    def __init__(self, pos_x, pos_y, contents):
-        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+    def __init__(self, pos_x, pos_y, contents, texture=TEXTURE, popup=POPUP):
+        super().__init__(self.EVENT, popup, pos_x, pos_y, texture)
         self.CONTENTS = contents
 
     def on_interact(self):
@@ -204,44 +204,32 @@ class ExitDoor(InteractiveType):
     NO_LEVEL = Sign(0, 0, "This portal doesn't lead\nanywhere.")
     PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'portal.wav'))
 
-    def __init__(self, pos_x, pos_y):
-        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+    def __init__(self, pos_x, pos_y, texture=TEXTURE):
+        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, texture)
         self.set_size(self.OBJECT_WIDTH, 64)
 
 
-class ExitHelicopter(InteractiveType):
+class ExitHelicopter(ExitDoor):
 
-    POPUP = "'F' to enter"
-    ENTER = pygame.USEREVENT + 2
-    EVENT = pygame.event.Event(ENTER)
     TEXTURE = 'helicopter.png'
 
     NO_LEVEL = Sign(0, 0, "This helicopter doesn't lead\nanywhere.")
     PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'helicopter.wav'))
 
     def __init__(self, pos_x, pos_y):
-        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+        super().__init__(pos_x, pos_y, texture=self.TEXTURE)
         self.set_size(300, 128)
 
 
-class Printer(InteractiveType):
+class Printer(Sign):
 
     POPUP = "'F' to turn on"
-    READ = pygame.USEREVENT + 7
-    EVENT = pygame.event.Event(READ)
     TEXTURE = 'printer.png'
-    CONTENTS: str
-
-    READ_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'pop.ogg'))
 
     def __init__(self, pos_x, pos_y, contents):
-        super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, self.TEXTURE)
+        super().__init__(pos_x, pos_y, contents, texture=self.TEXTURE, popup=self.POPUP)
         self.CONTENTS = contents
         self.set_size(32, 44)
-
-    def on_interact(self):
-        self.EVENT.sign = self
-        super().on_interact()
 
 
 class Lava(InteractiveType):
