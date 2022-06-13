@@ -197,7 +197,9 @@ class RobotEnemy(NPC):
 class RobotBoss(NPC):
 
     texture = 'boss.png'
+    NPC_WIDTH, NPC_HEIGHT = 85, 128
 
     # Initialise the base class and 'range' rectangle around the NPC
     def __init__(self, pos_x, pos_y, health=10):
         super().__init__(pos_x, pos_y, health, self.texture)
+

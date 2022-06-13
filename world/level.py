@@ -1,7 +1,8 @@
 from user.inv_objects import Potion, Gun
 from user.player import Player
 from world.level_objects import ObjectType, Background, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem, Sign, \
-    Lava, ExitHelicopter, StairLeft, StairRight, Printer, Board, Water, Glass, DirtBkg, Bush, Tree, Sand, BuildingBkg
+    Lava, ExitHelicopter, StairLeft, StairRight, Printer, Board, Water, Glass, DirtBkg, Bush, Tree, Sand, BuildingBkg1,\
+    BuildingBkg2
 from world.npc import RobotEnemy, NPC, Bullet, RobotBoss
 
 
@@ -86,10 +87,13 @@ class Level:
                 if char == "R":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32, health=3))
                 if char == "<":
-                    self.level_objects.append(BuildingBkg(char_index, line_index))
+                    self.level_objects.append(BuildingBkg1(char_index, line_index))
+                    self.level_objects.append(Wall(char_index, line_index))
+                if char == ">":
+                    self.level_objects.append(BuildingBkg2(char_index, line_index))
                     self.level_objects.append(Wall(char_index, line_index))
                 if char == "n":
-                    self.level_objects.append(Glass(char_index, line_index))
+                    self.level_objects.append(Background(char_index, line_index))
                     self.level_npc.append(RobotBoss(char_index * 32, line_index * 32, health=30))
                 if char == "O":
                     self.level_objects.append(Printer(char_index, line_index,

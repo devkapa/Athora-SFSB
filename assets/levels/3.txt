@@ -9,12 +9,12 @@
 
 
                                                          WWWWWWWWWWWWWWWWWWWWWWWWWW
-                                                         WggggggggggggggggggggggggW
-                                                       WWWggggggggggggggggggngggggW
-                                                       WggggggggggggggggggggggggggW
-                                                       WggggggggggggggggggggggggggW
-                                                       ggggggggggggggggggggggggggW
-    B   S                                              ggggggggggggggggggWWWW   WW
+                                                         W------------------------W
+                                                       WWW----------------n-------W
+                                                       W--------------------------W
+                                                       W--------------------------W
+                                                       --------------------------W
+    B   S                                              ------------------WWWW   WW
     B                             EEE                IWWWWWWWWWWWWWWWWWWWW   W
     B                                             m IWW   W          W        W
 ~~~~~~vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvsssvv
