@@ -56,22 +56,22 @@ class Level:
                     self.level_objects.append(Grass(char_index, line_index))
                 if char == "D":
                     self.level_objects.append(Dirt(char_index, line_index))
-                if char == "ß":
+                if char == "s":
                     self.level_objects.append(DirtBkg(char_index, line_index))
                 if char == "I":
                     self.level_objects.append(StairLeft(char_index, line_index))
-                if char == "Į":
+                if char == ":":
                     self.level_objects.append(Background(char_index, line_index))
                     self.level_objects.append(StairLeft(char_index, line_index))
                 if char == "J":
                     self.level_objects.append(StairRight(char_index, line_index))
-                if char == "ł":
+                if char == "g":
                     self.level_objects.append(Glass(char_index, line_index))
-                if char == "š":
+                if char == "m":
                     self.level_objects.append(Bush(char_index, line_index))
-                if char == "ë":
+                if char == "j":
                     self.level_objects.append(Tree(char_index, line_index))
-                if char == "K":
+                if char == ";":
                     self.level_objects.append(Background(char_index, line_index))
                     self.level_objects.append(StairRight(char_index, line_index))
                 if char == "L":
@@ -80,15 +80,15 @@ class Level:
                     self.level_objects.append(Board(char_index, line_index))
                 if char == "E":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
-                if char == "ę":
+                if char == "l":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
                     self.level_objects.append(Background(char_index, line_index))
-                if char == "ē":
+                if char == "d":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
                     self.level_objects.append(DirtBkg(char_index, line_index))
                 if char == "R":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32, health=3))
-                if char == "ñ":
+                if char == "n":
                     self.level_objects.append(Glass(char_index * 32, line_index * 32))
                     self.level_npc.append(RobotBoss(char_index * 32, line_index * 32, health=30))
                 if char == "O":
@@ -125,13 +125,13 @@ class Level:
                 if char == ")":
                     self.level_objects.append(Sign(char_index,line_index,
                                                    "Self flying helicopter\nPre-production unit\nAuthorised personnel only"))
-                if char == "œ":
+                if char == "o":
                     self.level_objects.append(Background(char_index, line_index))
                     self.level_objects.append(Sign(char_index,line_index,
                                                    "Welcome to SpaceF\nleading in innovation\nas the only company."))
                 if char == "C":
                     self.level_objects.append(ExitHelicopter(char_index, line_index))
-                if char == "ö":
+                if char == "p":
                     self.level_objects.append(DirtBkg(char_index, line_index))
                     self.level_objects.append(Sign(char_index, line_index,
                                                  "You dare use the\nsecret tunnel\nMeant for Felon himself?"))
