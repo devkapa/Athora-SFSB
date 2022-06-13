@@ -68,6 +68,23 @@ class Potion(InventoryObject):
         pygame.event.post(self.DRINK_EVENT)
 
 
+# An extension of the InventoryObject used as a way for the player to end the game
+class MagentaCartridge(InventoryObject):
+
+    NAME = 'Magenta Ink Cartridge'
+    TEXTURE = 'magenta_cartridge.png'
+
+    WIN = pygame.USEREVENT + 4
+    WIN_EVENT = pygame.event.Event(WIN)
+
+    def __init__(self):
+        super().__init__(self.NAME, self.TEXTURE)
+
+    def use(self):
+        pygame.event.post(self.WIN_EVENT)
+
+
+
 # An extension of the InventoryObject which serves as a weapon for the player
 class Gun(InventoryObject):
 

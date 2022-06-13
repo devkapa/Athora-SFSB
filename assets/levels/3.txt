@@ -13,10 +13,10 @@
                                                        WWW----------------n-------W
                                                        W--------------------------W
                                                        W--------------------------W
-                                                       --------------------------W
-    B   S                                              ------------------WWWW   WW
-    B                             EEE                IWWWWWWWWWWWWWWWWWWWW   W
-    B                                             m IWW   W          W        W
+                                                       ---------------------------W     B
+    B   S                                              ------------------WWWW----WW     B
+    B                             EEE                IWWWWWWWWWWWWWWWWWWWW   W          B
+    B                                             m IWW   W          W        W         B
 ~~~~~~vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvsssvv
 ~~~~~~vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvssssDDD
 ~~~~~~vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvssssDDDD
