@@ -371,7 +371,8 @@ def main():
                 if event.type == ExitDoor.ENTER:
                     if levels.next() is not None:
                         changing_levels = True
-                        ExitDoor.PORTAL_SOUND.play()
+                        door = event.door
+                        door.PORTAL_SOUND.play()
                         state = TRANSITION
                     else:
                         if sign_status[SIGN_OBJ] != ExitDoor.NO_LEVEL:

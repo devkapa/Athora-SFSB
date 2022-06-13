@@ -219,11 +219,16 @@ class ExitDoor(InteractiveType):
     TEXTURE = 'trapdoor.png'
 
     NO_LEVEL = Sign(0, 0, "This portal doesn't lead\nanywhere.")
-    PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'portal.wav'))
+    PORTAL_SOUND: pygame.mixer.Sound
 
     def __init__(self, pos_x, pos_y, texture=TEXTURE):
         super().__init__(self.EVENT, self.POPUP, pos_x, pos_y, texture)
         self.set_size(self.OBJECT_WIDTH, 64)
+        self.PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'portal.wav'))
+
+    def on_interact(self):
+        self.EVENT.door = self
+        super().on_interact()
 
 
 class ExitHelicopter(ExitDoor):
@@ -231,11 +236,11 @@ class ExitHelicopter(ExitDoor):
     TEXTURE = 'helicopter.png'
 
     NO_LEVEL = Sign(0, 0, "This helicopter doesn't lead\nanywhere.")
-    PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'helicopter.wav'))
 
     def __init__(self, pos_x, pos_y):
         super().__init__(pos_x, pos_y, texture=self.TEXTURE)
         self.set_size(300, 128)
+        self.PORTAL_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'tiles', 'helicopter.wav'))
 
 
 class Printer(Sign):
