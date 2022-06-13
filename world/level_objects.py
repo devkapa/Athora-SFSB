@@ -80,7 +80,7 @@ class Tree(ObjectType):
 
     def __init__(self, pos_x, pos_y):
         super().__init__(pos_x, pos_y, self.texture)
-        self.set_size(64, 69)
+        self.set_size(128, 138)
 
 
 class DirtBkg(ObjectType):
@@ -89,6 +89,15 @@ class DirtBkg(ObjectType):
 
     def __init__(self, pos_x, pos_y):
         super().__init__(pos_x, pos_y, self.texture)
+
+
+class GroundBkg(ObjectType):
+
+    texture = "groundbkg.png"
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
 
 
 # An extension of the ObjectType class that the player cannot walk past
@@ -134,6 +143,14 @@ class StairLeft(CollideType):
 class StairRight(CollideType):
 
     texture = 'stair_right.png'
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
+
+class Sand(CollideType):
+
+    texture = 'sand.png'
 
     def __init__(self, pos_x, pos_y):
         super().__init__(pos_x, pos_y, self.texture)
