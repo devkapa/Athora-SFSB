@@ -65,9 +65,10 @@ class NPC:
     FACING = RIGHT
 
     rect: pygame.Rect
+    inventory: list
 
     # Initialise NPC textures, rectangle and health
-    def __init__(self, pos_x, pos_y, health, texture):
+    def __init__(self, pos_x, pos_y, health, texture, inventory=None):
         self.TEXTURE_IMG = pygame.image.load(os.path.join('assets', 'sprites', 'npc', texture)).convert_alpha()
         self.TEXTURE_NORMAL = pygame.transform.scale(self.TEXTURE_IMG, (self.NPC_WIDTH, self.NPC_HEIGHT))
         self.TEXTURE_FLIPPED = pygame.transform.flip(self.TEXTURE_NORMAL, True, False)
@@ -75,6 +76,7 @@ class NPC:
         self.rect = pygame.Rect(pos_x, pos_y, self.NPC_WIDTH, self.NPC_HEIGHT)
         self.HEALTH = health
         self.MAX_HEALTH = health
+        self.inventory = [] if inventory is None else inventory
 
     # Draw NPC to the window surface, and draw a health bar beneath it if health is lost
     def draw(self, window):
@@ -140,12 +142,15 @@ class RobotEnemy(NPC):
     RADIUS_WIDTH, RADIUS_HEIGHT = 500, NPC.NPC_HEIGHT
     viewing_radius: pygame.Rect
 
+    OFFSET: int
+
     # Initialise the base class and 'range' rectangle around the NPC
-    def __init__(self, pos_x, pos_y, health=10):
-        super().__init__(pos_x, pos_y, health, self.texture)
+    def __init__(self, pos_x, pos_y, health=10, texture=texture, inventory=None):
+        super().__init__(pos_x, pos_y, health, texture, inventory=inventory)
         self.viewing_radius = pygame.Rect(self.rect.x - (self.RADIUS_WIDTH / 2 + self.NPC_WIDTH / 2),
                                           self.rect.y - (self.RADIUS_HEIGHT / 2 + self.NPC_HEIGHT / 2),
                                           self.RADIUS_WIDTH, self.RADIUS_HEIGHT)
+        self.OFFSET = 0
 
     # Update the position of the 'range' rectangle if the NPC moves
     # If the player is in the rectangle, alert the NPC and start shooting
@@ -179,7 +184,7 @@ class RobotEnemy(NPC):
         # Once been alerted for more than one second, start shooting
         if self.alerted_time > 1:
             x = 0
-            y = self.rect.y + (self.rect.h / 2)
+            y = self.rect.y + (self.rect.h / 2) + self.OFFSET
             if self.FACING == self.LEFT:
                 x = self.rect.x
             if self.FACING == self.RIGHT:
@@ -194,12 +199,21 @@ class RobotEnemy(NPC):
                 self.alerted_time = 0
 
 
-class RobotBoss(NPC):
+class RobotBoss(RobotEnemy):
 
     texture = 'boss.png'
     NPC_WIDTH, NPC_HEIGHT = 85, 128
+    RADIUS_WIDTH, RADIUS_HEIGHT = 500, NPC_HEIGHT
 
     # Initialise the base class and 'range' rectangle around the NPC
-    def __init__(self, pos_x, pos_y, health=10):
-        super().__init__(pos_x, pos_y, health, self.texture)
+    def __init__(self, pos_x, pos_y, health=10, inventory=None):
+        super().__init__(pos_x, pos_y, health, texture=self.texture, inventory=inventory)
+        self.OFFSET = 50
+
+    def update(self, window):
+        super().update(window)
+
+        # Update x and y position of the 'range' rectangle
+        self.viewing_radius.x = self.rect.x - self.RADIUS_WIDTH / 2 + self.NPC_WIDTH / 2
+        self.viewing_radius.y = self.rect.y - self.RADIUS_HEIGHT / 2 + self.NPC_HEIGHT / 2
 

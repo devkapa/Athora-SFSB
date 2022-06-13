@@ -32,7 +32,7 @@ WIN.set_alpha(None)
 pygame.display.set_caption("Athora: SpaceF Strikes Back")
 
 # Set the icon of the window
-ICON = pygame.image.load(os.path.join('assets', 'textures', 'tiles', 'wall.png'))
+ICON = pygame.image.load(os.path.join('assets', 'textures', 'logo.png'))
 pygame.display.set_icon(ICON)
 
 # Load background image and blit to a surface for later use
@@ -60,7 +60,7 @@ AMBIENCE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'misc', 'ambience
 
 
 # Import modules intentionally after pygame is initialised to allow for image conversion
-from user.inv_objects import Gun, Potion
+from user.inv_objects import Gun, Potion, MagentaCartridge
 from user.player import Player
 from world.level import Level, Levels
 from world.level_objects import InteractiveType, ExitDoor, CollideType, DroppedItem, Sign, Lava
@@ -128,6 +128,8 @@ def draw_bullets(player, level):
                 npc_collision = True
             if npc.HEALTH <= 0:
                 player.add_score(10)
+                for x in npc.inventory:
+                    level.level_objects.append(DroppedItem(npc.rect.x/32, npc.rect.y/32, x))
                 level.level_npc.remove(npc)
         if bullet.facing == bullet.LEFT:
             bullet.rect.x -= bullet.SPEED
@@ -151,10 +153,14 @@ def draw_bullets(player, level):
 def draw_overlay(colour, title, subheading):
     WIN.blit(create_overlay_surface(colour), (0, 0))
     title_text = render_text(title, 40)
-    subheading_text = render_text(subheading, 30)
     WIN.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, HEIGHT // 2 - title_text.get_height() // 2))
-    WIN.blit(subheading_text,
-             (WIDTH // 2 - subheading_text.get_width() // 2, HEIGHT // 2 - subheading_text.get_height() // 2 + 45))
+    subheading = subheading.split("\n")
+    last_line = 0
+    for line in subheading:
+        subheading_text = render_text(line, 30)
+        WIN.blit(subheading_text,
+             (WIDTH // 2 - subheading_text.get_width() // 2, HEIGHT // 2 - subheading_text.get_height() // 2 + 45 + last_line))
+        last_line += subheading_text.get_height() + 10
 
 
 # Draw a window sized overlay above the game window and slowly fade out over time
@@ -259,6 +265,9 @@ def main():
     transition_frames = 0
     text_frames = 0
 
+    # Has the player won?
+    win = False
+
     while running:
 
         # Limit the loop to run only 60 times per second
@@ -314,14 +323,19 @@ def main():
                 # Check if the user pressed a keyboard key
                 if event.type == pygame.KEYDOWN:
 
-                    # If the game is paused and the player is dead, end the game if 'R' is pressed
-                    if event.key == pygame.K_r and player.HEALTH < 1:
-                        running = False
+                    if not win:
+                        # If the game is paused and the player is dead, end the game if 'R' is pressed
+                        if event.key == pygame.K_r and player.HEALTH < 1:
+                            running = False
 
-                    # If the game is paused and the player is not dead, unpause the game if 'P' is pressed
-                    if event.key == pygame.K_p and player.HEALTH > 0:
-                        state = CONTINUE
-                        continue
+                        # If the game is paused and the player is not dead, unpause the game if 'P' is pressed
+                        if event.key == pygame.K_p and player.HEALTH > 0:
+                            state = CONTINUE
+                            continue
+
+                    # If the game is won, send to title screen if 'E' is pressed
+                    if event.key == pygame.K_e and win:
+                        running = False
 
             # Check if the game is in the CONTINUE state
             if state == CONTINUE:
@@ -410,6 +424,11 @@ def main():
                         if not player.DAMAGE_CHANNEL.get_busy() and player.HEALTH + event.hp > 0:
                             player.DAMAGE_CHANNEL.play(player.play_damage_sound())
                         damage = DEDUCT
+
+                # Check if player has won
+                if event.type == MagentaCartridge.WIN:
+                    win = True
+                    state = PAUSED
 
                 # Pass events to the player to handle player damage
                 player.process_event(event)
@@ -509,16 +528,22 @@ def main():
             text = render_text(next_level_title, 30, alpha=text_frames)
             WIN.blit(text, (WIDTH/2 - text.get_width() / 2, HEIGHT/2 - text.get_height()/2))
 
-        # If the game state is set to PAUSED and the player is alive, render the PAUSE overlay
-        if state == PAUSED and player.HEALTH > 0:
-            draw_overlay(GRAY, "Game Paused", "Press P to unpause")
+        if not win:
 
-        # If the player is dead, render the death overlay and set the game state to PAUSED
-        if player.HEALTH <= 0:
-            draw_overlay(RED, "You died!", "Press R to restart")
-            if state == CONTINUE:
-                player.DEATH_NOISE.play()
-            state = PAUSED
+            # If the game state is set to PAUSED and the player is alive, render the PAUSE overlay
+            if state == PAUSED and player.HEALTH > 0:
+                draw_overlay(GRAY, "Game Paused", "Press P to unpause")
+
+            # If the player is dead, render the death overlay and set the game state to PAUSED
+            if player.HEALTH <= 0:
+                draw_overlay(RED, "You died!", "Press R to restart")
+                if state == CONTINUE:
+                    player.DEATH_NOISE.play()
+                state = PAUSED
+
+        if state == PAUSED and win:
+            draw_overlay(POTION, "You won!", f"Score: {player.get_score()}\nPress 'E' to continue")
+
 
         pygame.display.update()
 
