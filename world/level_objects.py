@@ -49,6 +49,48 @@ class Air(ObjectType):
         super().__init__(pos_x, pos_y, self.texture)
 
 
+class Water(ObjectType):
+
+    texture = "water.jpg"
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
+
+class Glass(ObjectType):
+
+    texture = "glass.png"
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
+
+class Bush(ObjectType):
+
+    texture = "bush.png"
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+        self.set_size(64, 32)
+
+
+class Tree(ObjectType):
+
+    texture = "tree.png"
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+        self.set_size(64, 69)
+
+
+class DirtBkg(ObjectType):
+
+    texture = "dirtbkg.png"
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(pos_x, pos_y, self.texture)
+
+
 # An extension of the ObjectType class that the player cannot walk past
 # Structurally, it is the same as an ObjectType
 class CollideType(ObjectType):

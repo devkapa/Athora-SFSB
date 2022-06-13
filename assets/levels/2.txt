@@ -4,41 +4,41 @@
                                                             B                    B
                                                             B         EEE        B
                                                             W            )       W
-                                                            WWWWWWWWWWWWWWWWW---IW
-                                                            W------------------IWW
-                                                            W-----------------IWWW
-                                                            W----------------IWWWW
-                                                            W---------------IWWWWW
-                                                            WJ---WWWWWWWWWWWWWWWWW
-                                                            WWJ------------------W
-                                                            WWWJ-----------------W
-                                                            WWWWJ-----ę----------W
-                                                            WWWWWJ---------------W
-                                                            WWWWWWWWWWWWWWWWW---IW
-                                                            W------------------IWW
-                                                            W-----------------IWWW
-                                                            W----------ę-----IWWWW
-                                                            W---------------IWWWWW
-                                                            WJ---WWWWWWWWWWWWWWWWW
-                                                            WWJ------------------W
-                                                            WWWJ---------A     --W
-                                                            WWWWJ--------      --W
-                                                            WWWWWJ-----O---------W
-                                                            WWWWWWWWWWWWWWWWW---IW
-                                                            W------------------IWW
-                                                            W-----------------IWWW
-                                                            W-------ę--------IWWWW
-                                                            W---------------IWWWWW
-                                                            WJ---WWWWWWWWWWWWWWWWW
-                                                            WWJ------------------W
-                                                            WWWJ-----------------W
-                                                            WWWWJ-----ę----------W
-                                                            WWWWWJ---------------W
-                                                            WWWWWWWWWWWWWWWWW---IW
-                                                            W------------------IWW
-      B S                                                   W-----------------IWWW
-      B                                  E E E              -----------------IWWWW
-      B  &        *         (                               ----œ-----------IWWWWW
+                                                            WWWWWWWWWWWWWWWWW---ĮW
+                                                            W------------------ĮWW
+                                                            W-----------------ĮWWW
+                                                            W----------------ĮWWWW
+                                                            W---------------ĮWWWWW
+                                                            WK---WWWWWWWWWWWWWWWWW
+                                                            WWK------------------W
+                                                            WWWK-----------------W
+                                                            WWWWK-----ę----------W
+                                                            WWWWWK---------------W
+                                                            WWWWWWWWWWWWWWWWW---ĮW
+                                                            W------------------ĮWW
+                                                            W-----------------ĮWWW
+                                                            W----------ę-----ĮWWWW
+                                                            W---------------ĮWWWWW
+                                                            WK---WWWWWWWWWWWWWWWWW
+                                                            WWK------------------W
+                                                            WWWK---------A     --W
+                                                            WWWWK--------      --W
+                                                            WWWWWK-----O---------W
+                                                            WWWWWWWWWWWWWWWWW---ĮW
+                                                            W------------------ĮWW
+                                                            W-----------------ĮWWW
+                                                            W-------ę--------ĮWWWW
+                                                            W---------------ĮWWWWW
+                                                            WK---WWWWWWWWWWWWWWWWW
+                                                            WWK------------------W
+                                                            WWWK-----------------W
+                                                            WWWWK-----ę----------W
+                                                            WWWWWK---------------W
+                                                            WWWWWWWWWWWWWWWWW---ĮW
+                                                            W------------------ĮWW
+      B S                                                   W-----------------ĮWWW
+      B                          ë       E E E              -----------------ĮWWWW
+      B  &        *         (                               ----œ-----------ĮWWWWW
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD

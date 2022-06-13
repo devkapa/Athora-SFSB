@@ -1,8 +1,8 @@
 from user.inv_objects import Potion, Gun
 from user.player import Player
 from world.level_objects import ObjectType, Background, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem, Sign, \
-    Lava, ExitHelicopter, StairLeft, StairRight, Printer, Board
-from world.npc import RobotEnemy, NPC, Bullet
+    Lava, ExitHelicopter, StairLeft, StairRight, Printer, Board, Water, Glass, DirtBkg, Bush, Tree
+from world.npc import RobotEnemy, NPC, Bullet, RobotBoss
 
 
 class Level:
@@ -36,6 +36,8 @@ class Level:
             for char_index, char in enumerate(line):
                 if char == "-":
                     self.level_objects.append(Background(char_index, line_index))
+                if char == "~":
+                    self.level_objects.append(Water(char_index, line_index))
                 if char == "W":
                     self.level_objects.append(Wall(char_index, line_index))
                 if char == "S":
@@ -54,9 +56,23 @@ class Level:
                     self.level_objects.append(Grass(char_index, line_index))
                 if char == "D":
                     self.level_objects.append(Dirt(char_index, line_index))
+                if char == "ß":
+                    self.level_objects.append(DirtBkg(char_index, line_index))
                 if char == "I":
                     self.level_objects.append(StairLeft(char_index, line_index))
+                if char == "Į":
+                    self.level_objects.append(Background(char_index, line_index))
+                    self.level_objects.append(StairLeft(char_index, line_index))
                 if char == "J":
+                    self.level_objects.append(StairRight(char_index, line_index))
+                if char == "ł":
+                    self.level_objects.append(Glass(char_index, line_index))
+                if char == "š":
+                    self.level_objects.append(Bush(char_index, line_index))
+                if char == "ë":
+                    self.level_objects.append(Tree(char_index, line_index))
+                if char == "K":
+                    self.level_objects.append(Background(char_index, line_index))
                     self.level_objects.append(StairRight(char_index, line_index))
                 if char == "L":
                     self.level_objects.append(Lava(char_index, line_index))
@@ -67,8 +83,14 @@ class Level:
                 if char == "ę":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
                     self.level_objects.append(Background(char_index, line_index))
+                if char == "ē":
+                    self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
+                    self.level_objects.append(DirtBkg(char_index, line_index))
                 if char == "R":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32, health=3))
+                if char == "ñ":
+                    self.level_objects.append(Glass(char_index * 32, line_index * 32))
+                    self.level_npc.append(RobotBoss(char_index * 32, line_index * 32, health=30))
                 if char == "O":
                     self.level_objects.append(Background(char_index, line_index))
                     self.level_objects.append(Printer(char_index, line_index,
@@ -109,6 +131,10 @@ class Level:
                                                    "Welcome to SpaceF\nleading in innovation\nas the only company."))
                 if char == "C":
                     self.level_objects.append(ExitHelicopter(char_index, line_index))
+                if char == "ö":
+                    self.level_objects.append(DirtBkg(char_index, line_index))
+                    self.level_objects.append(Sign(char_index, line_index,
+                                                 "You dare use the\nsecret tunnel\nMeant for Felon himself?"))
 
     # Call the draw function of every object and NPC within the map, given it is currently visible in the game's viewport
     def draw(self, surface):
