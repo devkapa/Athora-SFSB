@@ -91,13 +91,13 @@ class DirtBkg(ObjectType):
         super().__init__(pos_x, pos_y, self.texture)
 
 
-class GroundBkg(ObjectType):
+class BuildingBkg(ObjectType):
 
-    texture = "groundbkg.png"
+    texture = "buildingbkg.png"
 
     def __init__(self, pos_x, pos_y):
         super().__init__(pos_x, pos_y, self.texture)
-
+        self.set_size(713, 1120)
 
 
 # An extension of the ObjectType class that the player cannot walk past

@@ -1,7 +1,7 @@
 from user.inv_objects import Potion, Gun
 from user.player import Player
 from world.level_objects import ObjectType, Background, Wall, ExitDoor, Air, Barrier, Grass, Dirt, DroppedItem, Sign, \
-    Lava, ExitHelicopter, StairLeft, StairRight, Printer, Board, Water, Glass, DirtBkg, Bush, Tree, Sand, GroundBkg
+    Lava, ExitHelicopter, StairLeft, StairRight, Printer, Board, Water, Glass, DirtBkg, Bush, Tree, Sand, BuildingBkg
 from world.npc import RobotEnemy, NPC, Bullet, RobotBoss
 
 
@@ -60,9 +60,6 @@ class Level:
                     self.level_objects.append(DirtBkg(char_index, line_index))
                 if char == "I":
                     self.level_objects.append(StairLeft(char_index, line_index))
-                if char == ":":
-                    self.level_objects.append(Background(char_index, line_index))
-                    self.level_objects.append(StairLeft(char_index, line_index))
                 if char == "J":
                     self.level_objects.append(StairRight(char_index, line_index))
                 if char == "g":
@@ -73,8 +70,9 @@ class Level:
                     self.level_objects.append(Sand(char_index, line_index))
                 if char == "j":
                     self.level_objects.append(Tree(char_index, line_index))
+                if char == ":":
+                    self.level_objects.append(StairLeft(char_index, line_index))
                 if char == ";":
-                    self.level_objects.append(Background(char_index, line_index))
                     self.level_objects.append(StairRight(char_index, line_index))
                 if char == "L":
                     self.level_objects.append(Lava(char_index, line_index))
@@ -82,21 +80,18 @@ class Level:
                     self.level_objects.append(Board(char_index, line_index))
                 if char == "E":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
-                if char == "l":
-                    self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
-                    self.level_objects.append(Background(char_index, line_index))
                 if char == "d":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
                     self.level_objects.append(DirtBkg(char_index, line_index))
                 if char == "R":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32, health=3))
-                if char == ">":
-                    self.level_objects.append(GroundBkg(char_index * 32, line_index * 32))
+                if char == "<":
+                    self.level_objects.append(BuildingBkg(char_index, line_index))
+                    self.level_objects.append(Wall(char_index, line_index))
                 if char == "n":
-                    self.level_objects.append(Glass(char_index * 32, line_index * 32))
+                    self.level_objects.append(Glass(char_index, line_index))
                     self.level_npc.append(RobotBoss(char_index * 32, line_index * 32, health=30))
                 if char == "O":
-                    self.level_objects.append(Background(char_index, line_index))
                     self.level_objects.append(Printer(char_index, line_index,
                                                  "Black: 0%  Yellow: 0%\nCyan: 0%  Magenta: 100%\nFewlett Packard"))
                 if char == "!":
@@ -130,7 +125,6 @@ class Level:
                     self.level_objects.append(Sign(char_index,line_index,
                                                    "Self flying helicopter\nPre-production unit\nAuthorised personnel only"))
                 if char == "o":
-                    self.level_objects.append(Background(char_index, line_index))
                     self.level_objects.append(Sign(char_index,line_index,
                                                    "Welcome to SpaceF\nleading in innovation\nas the only company."))
                 if char == "C":
