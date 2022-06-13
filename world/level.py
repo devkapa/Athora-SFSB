@@ -173,7 +173,7 @@ class Levels:
 
     def __init__(self, levels, player):
         self.levels = levels
-        self.current = self.levels[2]
+        self.current = self.levels[0]
         self.player = player
         self.spawn_player()
 
