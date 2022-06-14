@@ -36,7 +36,7 @@
                                                 WWWWW;               WW
                                                 <WWWWWWWWWWWWWWWW   :WW
                             j                   W                  :WWW
-      B S                                       W                 :WWWW
+      B   S                                     W                 :WWWW
       B                              E E E                       :WWWWW
       B      &    *     (                           o           :WWWWWW
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG

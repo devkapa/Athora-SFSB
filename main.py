@@ -542,8 +542,9 @@ def main():
                 state = PAUSED
 
         if state == PAUSED and win:
-            draw_overlay(POTION, "You won!", f"Score: {player.get_score()}\nPress 'E' to continue")
-
+            draw_overlay(POTION, "You won!", f"Score: {player.get_score()}"
+                                             f"\nTime: {str(datetime.timedelta(seconds=round(elapsed_time)))}"
+                                             f"\nPress 'E' to continue")
 
         pygame.display.update()
 

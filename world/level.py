@@ -163,6 +163,14 @@ class Level:
     def get_spawn_point(self):
         return self.spawn_point
 
+    def align(self, x, y):
+        for obj in self.level_objects:
+            obj.rect.x += x
+            obj.rect.y += y
+        for npc in self.level_npc:
+            npc.rect.x += x
+            npc.rect.y += y
+
 
 # A structure containing a list of levels, the current level and methods to get the next level in line
 class Levels:
@@ -181,6 +189,11 @@ class Levels:
         if isinstance(other, int):
             if self.levels[self.levels.index(self.current) + other] is not None:
                 self.current = self.levels[self.levels.index(self.current) + other]
+                spawn_point = self.current.get_spawn_point()
+                if 832 - spawn_point.rect.x < 0:
+                    self.current.align(832 - spawn_point.rect.x - 832//5, 0)
+                if 640 - spawn_point.rect.y < 0:
+                    self.current.align(0, 640 - spawn_point.rect.y - 832//5)
                 self.spawn_player()
 
     def spawn_player(self):
