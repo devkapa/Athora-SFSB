@@ -94,6 +94,9 @@ class Gun(InventoryObject):
     # Text that is shown and a sound that is played when it is reloaded
     RELOAD_TEXT = "'R' to reload"
     RELOAD_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'player', 'reload.wav'))
+    RELOAD_CHANNEL = pygame.mixer.Channel(3)
+
+    reloading = 0
 
     # Stores how many bullets are in the chamber
     EMPTY = False
@@ -109,10 +112,16 @@ class Gun(InventoryObject):
         surface.blit(bullets, (slot[0] + 70 - bullets.get_width(), slot[1] + 70 - bullets.get_height()))
         if self.chamber == 0:
             self.EMPTY = True
+            if self.RELOAD_CHANNEL.get_busy() and self.reloading == 0:
+                self.reloading = pygame.time.get_ticks()
+            if 0 <= pygame.time.get_ticks() - (self.reloading + self.RELOAD_SOUND.get_length()*1000) + 100 < 20:
+                self.EMPTY = False
+                self.chamber = 3
+                self.reloading = 0
 
     # Release a bullet and decrement the bullets in the chamber when used
     def use(self):
-        if self.chamber == 0:
+        if self.chamber == 0 or self.RELOAD_CHANNEL.get_busy():
             return
         x = 0
         y = pygame.player.rect.y + (pygame.player.rect.h / 2)
@@ -128,7 +137,5 @@ class Gun(InventoryObject):
 
     # Top up the chamber if it is empty, and play reload noise
     def reload(self):
-        if self.chamber == 0:
-            self.RELOAD_SOUND.play()
-            self.EMPTY = False
-            self.chamber = 3
+        if self.chamber == 0 and not self.RELOAD_CHANNEL.get_busy():
+            self.RELOAD_CHANNEL.play(self.RELOAD_SOUND)

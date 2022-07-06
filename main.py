@@ -464,7 +464,8 @@ def main():
         for item in player.inventory:
             if isinstance(item, Gun):
                 if item.EMPTY and player.inventory[player.inventory_selected_slot] == item:
-                    draw_popup(Gun.RELOAD_TEXT, player)
+                    if not item.reloading:
+                        draw_popup(Gun.RELOAD_TEXT, player)
 
         # Check if the player is hovering over an InteractiveType object
         interactions = check_for_interactions(current_level, player)
