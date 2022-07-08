@@ -14,6 +14,13 @@ pygame.font.init()
 pygame.display.init()
 pygame.mixer.init()
 
+# Set reserved channels
+pygame.mixer.set_num_channels(32)
+pygame.mixer.set_reserved(3)
+pygame.mixer.set_reserved(4)
+pygame.mixer.set_reserved(5)
+pygame.mixer.set_reserved(6)
+
 # RGB colour codes
 WHITE = (255, 255, 255)
 AQUA = (0, 255, 255)
@@ -53,6 +60,7 @@ TITLE, PAUSED, CONTINUE, TRANSITION = -1, 0, 1, 2  # Game state
 DEDUCT, NONE, GAIN = -1, 0, 1  # Damage indicator
 SIGN_OPEN, SIGN_OBJ = 0, 1  # Sign tuple indexes
 IS_INTERACTING, INTERACTING_WITH = 0, 1  # InteractiveType tuple indexes
+AMMO_PICKED, AMMO_EVENT, AMMO_ELAPSED = 0, 1, 2  # Ammo tuple indexes
 
 # Set an audio channel to be used only for background music
 AMBIENCE_CHANNEL = pygame.mixer.Channel(6)
@@ -60,7 +68,7 @@ AMBIENCE = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'misc', 'ambience
 
 
 # Import modules intentionally after pygame is initialised to allow for image conversion
-from user.inv_objects import Gun, Potion, MagentaCartridge
+from user.inv_objects import Gun, Potion, MagentaCartridge, Ammo
 from user.player import Player
 from world.level import Level, Levels
 from world.level_objects import InteractiveType, ExitDoor, CollideType, DroppedItem, Sign, Lava
@@ -110,10 +118,12 @@ def draw_window(player, level, elapsed_time, state):
         player.draw(WIN)
         title = render_text(level.title, 28)
         score_text = render_text("Score: " + str(player.get_score()), 20)
+        ammo_text = render_text("Ammo: " + str(player.get_ammo()), 20)
         timer = render_text(str(datetime.timedelta(seconds=round(elapsed_time))), 20)
         WIN.blit(title, (WIDTH - 5 - title.get_width(), 10))
         WIN.blit(timer, (WIDTH - 5 - timer.get_width(), title.get_height() + title.get_height() / 2))
         WIN.blit(score_text, (WIDTH - 5 - score_text.get_width(), title.get_height() + title.get_height() / 2 + timer.get_height() + timer.get_height() / 3))
+        WIN.blit(ammo_text, (WIDTH - 5 - ammo_text.get_width(), title.get_height() + title.get_height() / 2 + timer.get_height() + timer.get_height() / 3 + score_text.get_height() + score_text.get_height() / 3))
 
 
 # Calculate and draw the position of all bullets on the screen
@@ -128,8 +138,8 @@ def draw_bullets(player, level):
                 npc_collision = True
             if npc.HEALTH <= 0:
                 player.add_score(10)
-                for x in npc.inventory:
-                    level.level_objects.append(DroppedItem(npc.rect.x/32, npc.rect.y/32, x))
+                for i, x in enumerate(npc.inventory):
+                    level.level_objects.append(DroppedItem((npc.rect.x + 32*i)/32, npc.rect.y/32, x))
                 level.level_npc.remove(npc)
         if bullet.facing == bullet.LEFT:
             bullet.rect.x -= bullet.SPEED
@@ -179,18 +189,18 @@ def draw_transition(transition_frames):
 
 # For every physical object in the current level, check if the player is colliding with it
 # If the object is an InteractiveType, display a popup prompting the player to interact
-def check_for_interactions(level, player):
+def check_for_interactions(level, player, pending_reload):
     for level_object in level.level_objects:
         if isinstance(level_object, InteractiveType):
             if level_object.rect.colliderect(player.rect):
-                draw_popup(level_object.POPUP, player)
+                draw_popup(level_object.POPUP, player) if not pending_reload else None
                 return True, level_object
     return False, None
 
 
 # Draw a small text popup above the player's head
-def draw_popup(text, player):
-    popup_text = render_text(text, 12)
+def draw_popup(text, player, color=WHITE):
+    popup_text = render_text(text, 12, color=color)
     WIN.blit(popup_text, (player.rect.x + player.PLAYER_WIDTH / 2 - popup_text.get_width() / 2,
                           player.rect.y - player.PLAYER_HEIGHT / 3))
 
@@ -257,8 +267,9 @@ def main():
     levels = Levels(levels, player)
 
     # Variables to hold interaction and sign state
-    hovering: (bool, InteractiveType) = (False, None)
-    sign_status: (bool, Sign) = (False, None)
+    hovering: tuple[bool, InteractiveType | None] = (False, None)
+    sign_status: tuple[bool, Sign | None] = (False, None)
+    ammo_status: tuple[bool, Ammo | None, int] = (False, None, 0)
 
     # Variables to hold level change state and elapsed frames
     changing_levels = False
@@ -416,6 +427,10 @@ def main():
                 if event.type == Lava.BURN and damage_frames == 0:
                     player.change_hp(-1)
 
+                # Check if an ammo popup is necessary
+                if event.type == Ammo.PICKUP:
+                    ammo_status = (True, event.obj, 0)
+
                 # Alter the damage status if the player took damage
                 if event.type == player.DAMAGE:
                     if event.hp > 0:
@@ -460,15 +475,17 @@ def main():
                 if enemy.alerted:
                     enemy.alerted_time += 1 / FPS
 
+        pending_reload = False
         # If a Gun in the player's inventory is empty, prompt them to reload
         for item in player.inventory:
             if isinstance(item, Gun):
                 if item.EMPTY and player.inventory[player.inventory_selected_slot] == item:
                     if not item.reloading:
-                        draw_popup(Gun.RELOAD_TEXT, player)
+                        draw_popup(item.RELOAD_TEXT, player)
+                        pending_reload = True
 
         # Check if the player is hovering over an InteractiveType object
-        interactions = check_for_interactions(current_level, player)
+        interactions = check_for_interactions(current_level, player, pending_reload)
 
         # If they are hovering over an InteractiveType, save it to a variable
         if interactions[IS_INTERACTING]:
@@ -479,6 +496,13 @@ def main():
         # If a sign is read by a player, draw it
         if sign_status[SIGN_OPEN]:
             draw_sign(sign_status[SIGN_OBJ].CONTENTS)
+
+        if ammo_status[AMMO_PICKED]:
+            if ammo_status[AMMO_ELAPSED] <= 120:
+                draw_popup("+" + str(ammo_status[AMMO_EVENT].AMOUNT) + " ammo", player, color=GREEN)
+                ammo_status = (True, ammo_status[AMMO_EVENT], ammo_status[AMMO_ELAPSED] + 1)
+            else:
+                ammo_status = (False, None, 0)
 
         # Increment the damage frame counter if the player's health is changing
         if damage != NONE:

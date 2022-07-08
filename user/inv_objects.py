@@ -84,6 +84,26 @@ class MagentaCartridge(InventoryObject):
         pygame.event.post(self.WIN_EVENT)
 
 
+# An extension of the InventoryObject used as a placeholder for ammo
+class Ammo(InventoryObject):
+
+    NAME = 'Ammo'
+    TEXTURE = 'ammo.png'
+
+    PICKUP = pygame.USEREVENT + 9
+    PICKUP_EVENT = pygame.event.Event(PICKUP)
+
+    AMOUNT: int
+
+    def __init__(self, amt=10):
+        super().__init__(self.NAME, self.TEXTURE)
+        self.AMOUNT = amt
+
+    def use(self):
+        self.PICKUP_EVENT.obj = self
+        pygame.event.post(self.PICKUP_EVENT)
+
+
 
 # An extension of the InventoryObject which serves as a weapon for the player
 class Gun(InventoryObject):
@@ -92,7 +112,7 @@ class Gun(InventoryObject):
     TEXTURE = 'gun.png'
 
     # Text that is shown and a sound that is played when it is reloaded
-    RELOAD_TEXT = "'R' to reload"
+    RELOAD_TEXT: str
     RELOAD_SOUND = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'player', 'reload.wav'))
     RELOAD_CHANNEL = pygame.mixer.Channel(3)
 
@@ -111,13 +131,28 @@ class Gun(InventoryObject):
         bullets = render_text(str(self.chamber), 15)
         surface.blit(bullets, (slot[0] + 70 - bullets.get_width(), slot[1] + 70 - bullets.get_height()))
         if self.chamber == 0:
+            if pygame.player.get_ammo() > 0:
+                self.RELOAD_TEXT = "'R' to reload"
+            else:
+                self.RELOAD_TEXT = 'No ammo'
             self.EMPTY = True
-            if self.RELOAD_CHANNEL.get_busy() and self.reloading == 0:
-                self.reloading = pygame.time.get_ticks()
-            if 0 <= pygame.time.get_ticks() - (self.reloading + self.RELOAD_SOUND.get_length()*1000) + 100 < 20:
-                self.EMPTY = False
-                self.chamber = 3
-                self.reloading = 0
+            if self.RELOAD_CHANNEL.get_busy() and not self.reloading:
+                self.reloading = 1
+            if self.reloading:
+                if not self.RELOAD_CHANNEL.get_busy():
+                    self.EMPTY = False
+                    self.set_ammo()
+                    self.reloading = 0
+
+    def set_ammo(self):
+        if pygame.player.ammo >= 3:
+            self.chamber = 3
+            pygame.player.add_ammo(-3)
+            return
+        if pygame.player.ammo > 0:
+            self.chamber = pygame.player.ammo
+            pygame.player.add_ammo(-pygame.player.ammo)
+            return
 
     # Release a bullet and decrement the bullets in the chamber when used
     def use(self):
@@ -137,5 +172,5 @@ class Gun(InventoryObject):
 
     # Top up the chamber if it is empty, and play reload noise
     def reload(self):
-        if self.chamber == 0 and not self.RELOAD_CHANNEL.get_busy():
+        if self.chamber == 0 and not self.RELOAD_CHANNEL.get_busy() and not pygame.player.get_ammo() == 0:
             self.RELOAD_CHANNEL.play(self.RELOAD_SOUND)

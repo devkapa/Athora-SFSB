@@ -3,6 +3,7 @@ import random
 
 import pygame.image
 
+from user.inv_objects import Ammo
 from world.level_objects import CollideType, DroppedItem
 
 
@@ -92,7 +93,9 @@ class Player:
     inventory_selected_slot = 0
 
     nearest_grav = 0
+
     score = 0
+    ammo = 0
 
     def __init__(self, spawn_x=0, spawn_y=0):
         self.SPAWN_X = spawn_x
@@ -101,6 +104,7 @@ class Player:
         self.current_img = self.PLAYER_RIGHT
         self.inventory = [None, None]
         self.init_damage_sounds()
+        self.ammo = 6
 
     # Load all sounds that can be played while taking damage
     def init_damage_sounds(self):
@@ -120,6 +124,12 @@ class Player:
 
     def add_score(self, amt):
         self.score += amt
+
+    def get_ammo(self):
+        return self.ammo
+
+    def add_ammo(self, amt):
+        self.ammo += amt
 
     # Change the rect position of the player based on gravity and keyboard inputs
     def handle_movement(self, window, keys_pressed, level):
@@ -258,13 +268,19 @@ class Player:
     # Assign an inventory slot to an item, then remove that item from the current level
     def pickup(self, item, where=None):
         where = self.inventory_selected_slot if where is None else where
-        self.COLLECT_NOISE.play()
         self.inventory[where] = item.INV_OBJECT
+        self.COLLECT_NOISE.play()
         pygame.level.level_objects.remove(item)
 
     # Add an item to the player's inventory to the next free slot
     # If there is no free slot, the current item is dropped and new one is put in its place
     def add_to_inventory(self, item):
+        if isinstance(item.INV_OBJECT, Ammo):
+            item.INV_OBJECT.use()
+            self.add_ammo(item.INV_OBJECT.AMOUNT)
+            self.COLLECT_NOISE.play()
+            pygame.level.level_objects.remove(item)
+            return
         x = 0
         if self.direction[self.RIGHT]:
             x = self.rect.x + self.rect.width
