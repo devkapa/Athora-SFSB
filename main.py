@@ -1,10 +1,14 @@
 import datetime
 import os.path
 import sys
+import webbrowser
 
 import pygame
+import requests
 
 from pygame.locals import *
+
+version = "beta-v0.2"
 
 # Enable double buffer
 flags = DOUBLEBUF
@@ -23,6 +27,7 @@ pygame.mixer.set_reserved(6)
 
 # RGB colour codes
 WHITE = (255, 255, 255)
+YELLOW = (253, 248, 140)
 AQUA = (0, 255, 255)
 PINK = (255, 225, 225)
 RED = (255, 0, 0)
@@ -220,19 +225,33 @@ def draw_sign(text):
 
 # Draw window sized screen with a title and interactive buttons that enlarge when hovered over
 # Return the start and quit button rectangles to pass to the event checker
-def draw_title_screen():
+def draw_title_screen(update_message):
+
+    # Background
     WIN.blit(BACKGROUND, (0, 0))
+
+    # Button rectangles
+    update_box = pygame.Rect(10, 10, WIDTH, 40)
     start_button = pygame.Rect(WIDTH / 2 - 100, HEIGHT / 2 + 50, 200, 75)
     quit_button = pygame.Rect(WIDTH / 2 - 100, HEIGHT / 2 + 150, 200, 75)
+
+    # Font renders
     logo = render_text("Athora", 60)
+    update_text = render_text(update_message, 11 if update_box.collidepoint(pygame.mouse.get_pos()) else 10, color=AQUA)
+    version_text = render_text(version, 12, color=YELLOW)
     sub_logo = render_text("SpaceF Strikes Back", 15)
     start_text = render_text("Play", 35 if start_button.collidepoint(pygame.mouse.get_pos()) else 30)
     quit_text = render_text("Quit", 35 if quit_button.collidepoint(pygame.mouse.get_pos()) else 30)
+
+    # Blit renders onto window
+    WIN.blit(update_text, (WIDTH / 2 - update_text.get_width() / 2, 10))
     WIN.blit(logo, (WIDTH / 2 - logo.get_width() / 2, HEIGHT / 2 - 150 + logo.get_height() / 2))
-    WIN.blit(sub_logo, (WIDTH / 2 - sub_logo.get_width() / 2, HEIGHT / 2 - 50 + sub_logo.get_height() / 2))
+    WIN.blit(sub_logo, (WIDTH / 2 - (sub_logo.get_width() + version_text.get_width() + 20) / 2, HEIGHT / 2 - 50 + sub_logo.get_height() / 2))
+    WIN.blit(version_text, (WIDTH / 2 - (sub_logo.get_width() + version_text.get_width() + 20) / 2 + sub_logo.get_width() + 20, HEIGHT / 2 - 46 + version_text.get_height() / 2))
     WIN.blit(start_text, (WIDTH / 2 - start_text.get_width() / 2, HEIGHT / 2 + 50 + start_text.get_height() / 2))
     WIN.blit(quit_text, (WIDTH / 2 - quit_text.get_width() / 2, HEIGHT / 2 + 150 + quit_text.get_height() / 2))
-    return start_button, quit_button
+
+    return start_button, quit_button, update_box
 
 
 def main():
@@ -246,6 +265,18 @@ def main():
 
     # Set the initial state to the title screen
     state = TITLE
+    update_message = ""
+
+    # Check for updates from GitHub - if this version doesn't match the latest version
+    # If there is no internet, print error but run game
+    try:
+        response = requests.get("https://api.github.com/repos/Nulfy/Athora-SFSB/releases/latest", timeout=3)
+        if response.json()["tag_name"] != version:
+            update_message = "There is a new version available! Click here to download."
+    except requests.ConnectionError:
+        update_message = "Cannot check for updates."
+    except requests.Timeout:
+        update_message = "Cannot check for updates."
 
     # Create a player and set a pygame constant
     player = Player()
@@ -290,7 +321,7 @@ def main():
         # Check if the game is in the TITLE SCREEN state
         if state == TITLE:
 
-            start_button, quit_button = draw_title_screen()
+            start_button, quit_button, update_box = draw_title_screen(update_message)
 
             # Iterate through pygame events
             for event in pygame.event.get():
@@ -311,6 +342,10 @@ def main():
                     # Set the game state to CONTINUE if the user pressed the "Start" text
                     if start_button.collidepoint(event.pos):
                         state = CONTINUE
+
+                    if update_box.collidepoint(event.pos):
+                        if update_message == "There is a new version available! Click here to download.":
+                            webbrowser.open('https://github.com/Nulfy/Athora-SFSB/releases/latest', new=0)
 
             pygame.display.update()
 
