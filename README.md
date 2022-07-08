@@ -15,4 +15,4 @@ Unfortunately, no one but you seems to suspect anything...
 You, a low level employee, have taken it upon yourself to sneak into the lab and figure out what the hell is going on.
 
 # How to play
-Athora: SpaceF Strikes Back is currently in development. While you're waiting, try Athora: A New Boat!
+The beta version of Athora: SpaceF Strikes Back is available to play! (https://github.com/Nulfy/Athora-SFSB/releases/latest) 
