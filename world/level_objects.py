@@ -185,8 +185,6 @@ class Board(ObjectType):
 # An extension of the ObjectType that, when collided with, allows for players to interact with
 class InteractiveType(ObjectType):
 
-    TEXTURE: pygame.Surface
-
     # InteractiveTypes have an Event that is posted when interacted with
     # They also have a text POPUP that is shown when the player collides with it
     EVENT: pygame.event.Event

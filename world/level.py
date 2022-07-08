@@ -82,7 +82,7 @@ class Level:
                 if char == "E":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32, inventory=[Potion(1), Ammo(20)]))
                 if char == "d":
-                    self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32))
+                    self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32, inventory=[Potion(1), Ammo(20)]))
                     self.level_objects.append(DirtBkg(char_index, line_index))
                 if char == "R":
                     self.level_npc.append(RobotEnemy(char_index * 32, line_index * 32, health=3, inventory=[Ammo()]))
